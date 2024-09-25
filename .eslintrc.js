@@ -5,4 +5,4 @@ module.exports = {
     "no-unused-vars": ["warn", { args: "all", argsIgnorePattern: "^_" }],
     "@typescript-eslint/no-explicit-any": "warn",
   },
-};
+}
