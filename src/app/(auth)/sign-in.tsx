@@ -1,13 +1,20 @@
+import { signInWithEmail } from "@/api/auth"
+import { SignButton } from "@/components/SignButton"
+import { useAuth } from "@/hooks/useAuth"
+import { supabase } from "@/utils/supabase"
 import { Link } from "expo-router"
 import { useState } from "react"
 import { Alert, Button, Text, TextInput, TouchableOpacity, View } from "react-native"
 
 export default function SignIn() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("medber1997@gmail.com")
+  const [password, setPassword] = useState("aaaaaaaa")
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSignIn = () => {
-    Alert.alert("Sign In", `Email: ${email}\nPassword: ${password}`)
+  const handleSignIn = async () => {
+    setIsLoading(true)
+    await signInWithEmail({ email, password })
+    setIsLoading(false)
   }
 
   return (
@@ -39,9 +46,14 @@ export default function SignIn() {
         />
       </View>
 
-      <TouchableOpacity onPress={handleSignIn} className="mb-4 w-full rounded-lg bg-blue-600 py-3 text-center">
-        <Text className="text-center text-lg font-semibold text-white">Sign In</Text>
-      </TouchableOpacity>
+      <SignButton isLoading={isLoading} title="Sign In" onPress={handleSignIn} />
+      <SignButton
+        isLoading={isLoading}
+        title="Logout"
+        onPress={() => {
+          supabase.auth.signOut()
+        }}
+      />
 
       <View className="mt-6 flex-row items-center justify-center">
         <Text className="text-gray-600">Don't have an account? </Text>

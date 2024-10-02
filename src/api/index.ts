@@ -1,0 +1,1 @@
+export { signUpWithEmail } from "./auth"

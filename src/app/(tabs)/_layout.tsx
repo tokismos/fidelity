@@ -1,7 +1,13 @@
-import { Tabs } from "expo-router"
+import { Redirect, Tabs } from "expo-router"
 import FontAwesome from "@expo/vector-icons/FontAwesome"
+import { useAuth } from "@/hooks/useAuth"
 
 export default function TabLayout() {
+  const { session } = useAuth()
+
+  if (!session) {
+    return <Redirect href="/sign-in" />
+  }
   return (
     <Tabs>
       <Tabs.Screen

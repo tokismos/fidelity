@@ -1,13 +1,18 @@
+import { signUpWithEmail } from "@/api"
+import { SignButton } from "@/components/SignButton"
 import { Link } from "expo-router"
 import { useState } from "react"
-import { Alert, Button, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { ActivityIndicator, Alert, Button, Text, TextInput, TouchableOpacity, View } from "react-native"
 
 export default function SignIn() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("medber1997@gmail.com")
+  const [password, setPassword] = useState("aaaaaaaa")
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSignIn = () => {
-    Alert.alert("Sign In", `Email: ${email}\nPassword: ${password}`)
+  const handleSignUp = async () => {
+    setIsLoading(true)
+    await signUpWithEmail({ email, password })
+    setIsLoading(false)
   }
 
   return (
@@ -39,9 +44,7 @@ export default function SignIn() {
         />
       </View>
 
-      <TouchableOpacity onPress={handleSignIn} className="mb-4 w-full rounded-lg bg-blue-600 py-3 text-center">
-        <Text className="text-center text-lg font-semibold text-white">Sign Up</Text>
-      </TouchableOpacity>
+      <SignButton isLoading={isLoading} title="Sign Up" onPress={handleSignUp} />
 
       <View className="mt-6 flex-row items-center justify-center">
         <Text className="text-gray-600">Already have an account ? </Text>
