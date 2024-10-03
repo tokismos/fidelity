@@ -9,7 +9,7 @@ export default function TabLayout() {
     return <Redirect href="/sign-in" />
   }
   return (
-    <Tabs>
+    <Tabs screenOptions={{ headerShown: false }}>
       <Tabs.Screen
         name="index"
         options={{
