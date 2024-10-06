@@ -7,9 +7,62 @@ export type Json =
   | Json[]
 
 export type Database = {
-  public: {
+  graphql_public: {
     Tables: {
       [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          operationName?: string
+          query?: string
+          variables?: Json
+          extensions?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+  public: {
+    Tables: {
+      profiles: {
+        Row: {
+          id: string
+          points: number | null
+          role: Database["public"]["Enums"]["role"]
+          updated_at: string | null
+        }
+        Insert: {
+          id: string
+          points?: number | null
+          role?: Database["public"]["Enums"]["role"]
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          points?: number | null
+          role?: Database["public"]["Enums"]["role"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +71,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      role: "user" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -107,3 +160,4 @@ export type Enums<
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never
+

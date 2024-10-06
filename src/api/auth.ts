@@ -1,7 +1,9 @@
 import { supabase } from "@/utils/supabase"
 import { Alert } from "react-native"
 
-export async function signUpWithEmail({ email, password }) {
+type Props = { email: string; password: string }
+
+export async function signUpWithEmail({ email, password }: Props) {
   const {
     data: { session },
     error,
@@ -14,7 +16,7 @@ export async function signUpWithEmail({ email, password }) {
   if (!session) Alert.alert("Please check your inbox for email verification!")
 }
 
-export async function signInWithEmail({ email, password }) {
+export async function signInWithEmail({ email, password }: Props) {
   const { error, data } = await supabase.auth.signInWithPassword({
     email: email,
     password: password,

@@ -3,11 +3,11 @@ import { useAuth } from "@/hooks/useAuth"
 import { View, Text } from "react-native"
 
 export default function Tab() {
-  const { userId } = useAuth()
+  const { userId, isAdmin } = useAuth()
 
   return (
     <View>
-      <Text>Tab Index</Text>
+      <Text>USER ROLE : {isAdmin ? "ADMIN " : "USER"}</Text>
       {userId && <QrCode value={userId} />}
     </View>
   )
