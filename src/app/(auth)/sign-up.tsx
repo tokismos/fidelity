@@ -2,9 +2,9 @@ import { signUpWithEmail } from "@/api"
 import { SignButton } from "@/components/SignButton"
 import { Link } from "expo-router"
 import { useState } from "react"
-import { ActivityIndicator, Alert, Button, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { Text, TextInput, View } from "react-native"
 
-export default function SignIn() {
+export default function SignUp() {
   const [email, setEmail] = useState("medber1997@gmail.com")
   const [password, setPassword] = useState("aaaaaaaa")
   const [isLoading, setIsLoading] = useState(false)

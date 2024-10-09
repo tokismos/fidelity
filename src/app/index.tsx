@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/useAuth"
 import { supabase } from "@/utils/supabase"
-import { Redirect } from "expo-router"
-import { ActivityIndicator, AppState } from "react-native"
+import { Redirect, router, useSegments } from "expo-router"
+import { ActivityIndicator, AppState, View } from "react-native"
 
 export default function Index() {
   AppState.addEventListener("change", (state) => {
@@ -11,14 +11,16 @@ export default function Index() {
       supabase.auth.stopAutoRefresh()
     }
   })
+  const segments = useSegments()
+  console.log("Current route segments:", segments)
+  const { session, isLoading, isAdmin } = useAuth()
 
-  const { session, isLoading } = useAuth()
+  // if (isLoading) return <ActivityIndicator size={"large"} color={"black"} />
+  if (isLoading) return <View className="flex-1 bg-black" />
 
-  if (isLoading) return <ActivityIndicator size={"large"} color={"black"} />
-
-  if (!session) {
-    return <Redirect href="/sign-in" />
+  if (session) {
+    return <Redirect href={isAdmin ? "/(admin)/home" : "/(user)/home"} />
   }
 
-  return <Redirect href="/(tabs)" />
+  return <Redirect href="/sign-in" />
 }

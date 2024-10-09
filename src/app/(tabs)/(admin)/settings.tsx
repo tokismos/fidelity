@@ -1,7 +1,7 @@
 import { supabase } from "@/utils/supabase"
 import { View, Text, StyleSheet, Button } from "react-native"
 
-export default function Tab() {
+export default function Settings() {
   return (
     <View>
       <Text>Setting</Text>
