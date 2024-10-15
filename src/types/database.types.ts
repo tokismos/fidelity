@@ -63,6 +63,38 @@ export type Database = {
           },
         ]
       }
+      stores: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          name: string
+          owner_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          name: string
+          owner_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          name?: string
+          owner_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stores_owner_id_fkey1"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

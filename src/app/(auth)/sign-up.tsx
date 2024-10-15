@@ -1,5 +1,5 @@
 import { signUpWithEmail } from "@/api"
-import { SignButton } from "@/components/SignButton"
+import { ButtonWithIndicator } from "@/components/ButtonWithIndicator"
 import { Link } from "expo-router"
 import { useState } from "react"
 import { Text, TextInput, View } from "react-native"
@@ -44,7 +44,7 @@ export default function SignUp() {
         />
       </View>
 
-      <SignButton isLoading={isLoading} title="Sign Up" onPress={handleSignUp} />
+      <ButtonWithIndicator isLoading={isLoading} title="Sign Up" onPress={handleSignUp} />
 
       <View className="mt-6 flex-row items-center justify-center">
         <Text className="text-gray-600">Already have an account ? </Text>

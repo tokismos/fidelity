@@ -2,12 +2,13 @@ import { supabase } from "@/utils/supabase"
 import { Session, User } from "@supabase/supabase-js"
 import { PropsWithChildren, createContext, useEffect, useState } from "react"
 import { isUserAdmin } from "@/api"
+import { UserId } from "@/types"
 
 type AuthData = {
   session: Session | null
   isLoading: boolean
-  userId: User["id"] | null
-  isAdmin: boolean
+  userId: UserId
+  isAdmin: boolean | null
 }
 
 export const AuthContext = createContext<AuthData | undefined>(undefined)
@@ -17,7 +18,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     session: null,
     isLoading: true,
     userId: null,
-    isAdmin: false,
+    isAdmin: null,
   })
 
   useEffect(() => {

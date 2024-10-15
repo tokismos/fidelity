@@ -12,7 +12,7 @@ export default function UserLayout() {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: true }}>
+    <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="home"
         options={{

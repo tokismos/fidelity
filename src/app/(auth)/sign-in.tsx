@@ -1,5 +1,5 @@
 import { signInWithEmail } from "@/api/auth"
-import { SignButton } from "@/components/SignButton"
+import { ButtonWithIndicator } from "@/components/ButtonWithIndicator"
 import { supabase } from "@/utils/supabase"
 import { Link } from "expo-router"
 import { useState } from "react"
@@ -45,8 +45,8 @@ export default function SignIn() {
         />
       </View>
 
-      <SignButton isLoading={isLoading} title="Sign In" onPress={handleSignIn} />
-      <SignButton
+      <ButtonWithIndicator isLoading={isLoading} title="Sign In" onPress={handleSignIn} />
+      <ButtonWithIndicator
         isLoading={isLoading}
         title="Logout"
         onPress={() => {
