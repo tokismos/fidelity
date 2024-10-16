@@ -63,27 +63,62 @@ export type Database = {
           },
         ]
       }
+      rewards: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: number
+          points_cost: number
+          store_id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          points_cost: number
+          store_id: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          points_cost?: number
+          store_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rewards_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stores: {
         Row: {
           created_at: string
           id: string
           image_url: string
           name: string
-          owner_id: string | null
+          owner_id: string
         }
         Insert: {
           created_at?: string
           id?: string
           image_url?: string
           name: string
-          owner_id?: string | null
+          owner_id: string
         }
         Update: {
           created_at?: string
           id?: string
           image_url?: string
           name?: string
-          owner_id?: string | null
+          owner_id?: string
         }
         Relationships: [
           {
