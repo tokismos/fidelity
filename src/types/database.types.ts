@@ -67,7 +67,7 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
-          id: number
+          id: string
           points_cost: number
           store_id: string
           title: string
@@ -75,7 +75,7 @@ export type Database = {
         Insert: {
           created_at?: string
           description?: string | null
-          id?: number
+          id?: string
           points_cost: number
           store_id: string
           title: string
@@ -83,14 +83,14 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string | null
-          id?: number
+          id?: string
           points_cost?: number
           store_id?: string
           title?: string
         }
         Relationships: [
           {
-            foreignKeyName: "rewards_store_id_fkey"
+            foreignKeyName: "rewards_store_id_fkey1"
             columns: ["store_id"]
             isOneToOne: false
             referencedRelation: "stores"

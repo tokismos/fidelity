@@ -1,6 +1,6 @@
 import { AddReward } from "@/components/AddReward"
 import { supabase } from "@/utils/supabase"
-import { View, Text, StyleSheet, Button } from "react-native"
+import { View, Text, Button } from "react-native"
 
 export default function Settings() {
   return (
