@@ -6,7 +6,7 @@ import { useState } from "react"
 import { Text, TextInput, View } from "react-native"
 
 export default function SignIn() {
-  const [email, setEmail] = useState("medber1997@gmail.coma")
+  const [email, setEmail] = useState("medber1997@gmail.com")
   const [password, setPassword] = useState("aaaaaaaa")
   const [isLoading, setIsLoading] = useState(false)
 
