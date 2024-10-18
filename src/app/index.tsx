@@ -1,6 +1,6 @@
 import { useAuth } from "@/hooks/useAuth"
 import { supabase } from "@/utils/supabase"
-import { Redirect, useSegments } from "expo-router"
+import { Redirect } from "expo-router"
 import { AppState, View } from "react-native"
 
 export default function Index() {
@@ -11,7 +11,6 @@ export default function Index() {
       supabase.auth.stopAutoRefresh()
     }
   })
-  const segments = useSegments()
   const { session, isLoading, isAdmin } = useAuth()
 
   if (isLoading) return <View className="flex-1 bg-black" />

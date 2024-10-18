@@ -36,22 +36,19 @@ export type Database = {
     Tables: {
       profiles: {
         Row: {
+          created_at: string | null
           id: string
-          points: number | null
           role: Database["public"]["Enums"]["role"]
-          updated_at: string | null
         }
         Insert: {
-          id: string
-          points?: number | null
+          created_at?: string | null
+          id?: string
           role?: Database["public"]["Enums"]["role"]
-          updated_at?: string | null
         }
         Update: {
+          created_at?: string | null
           id?: string
-          points?: number | null
           role?: Database["public"]["Enums"]["role"]
-          updated_at?: string | null
         }
         Relationships: [
           {
@@ -90,6 +87,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "rewards_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "rewards_store_id_fkey1"
             columns: ["store_id"]
             isOneToOne: false
@@ -124,6 +128,45 @@ export type Database = {
           {
             foreignKeyName: "stores_owner_id_fkey1"
             columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_stores: {
+        Row: {
+          created_at: string
+          id: string
+          points: number
+          store_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          points?: number
+          store_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          points?: number
+          store_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_stores_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_stores_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]

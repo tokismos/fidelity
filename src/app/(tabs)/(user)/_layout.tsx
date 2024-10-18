@@ -1,4 +1,4 @@
-import { Redirect, Stack } from "expo-router"
+import { Redirect, Stack, Tabs } from "expo-router"
 import { useAuth } from "@/hooks/useAuth"
 import { View } from "react-native"
 
@@ -12,13 +12,19 @@ export default function UserLayout() {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen
+    <Tabs screenOptions={{ headerShown: false }}>
+      <Tabs.Screen
         name="home"
         options={{
           title: "This is USER SCREEN",
         }}
       />
-    </Stack>
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "This is USER SCREEN",
+        }}
+      />
+    </Tabs>
   )
 }

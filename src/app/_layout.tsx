@@ -9,9 +9,9 @@ export default function Layout() {
       <QueryProvider>
         <SafeAreaView className="flex-1">
           <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(user)" />
             <Stack.Screen name="(auth)" />
             <Stack.Screen name="(tabs)/(admin)" />
+            <Stack.Screen name="(tabs)/(user)" />
             <Stack.Screen name="index" />
           </Stack>
         </SafeAreaView>

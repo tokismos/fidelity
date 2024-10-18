@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth"
 import { supabase } from "@/utils/supabase"
 import { View, Text, Button } from "react-native"
 
-export default function User() {
+export default function Profile() {
   const { userId, isAdmin } = useAuth()
 
   return (
