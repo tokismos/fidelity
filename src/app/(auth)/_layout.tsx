@@ -8,7 +8,7 @@ export default function AuthLayout() {
   if (isLoading) return <View className="flex-1 bg-red-600" />
 
   if (session) {
-    return <Redirect href={isAdmin ? "/(admin)/home" : "/(user)/home"} />
+    return <Redirect href={isAdmin ? "/admin/home" : "/user/home"} />
   }
 
   return (

@@ -1,17 +1,10 @@
-import { useQuery } from "@tanstack/react-query"
-
 import { useGetStore } from "./useGetStore"
-import { getRewards } from "@/api/getRewards"
+import { useGetRewardsByStoreId } from "./useGetRewardsByStoreId"
 
 export const useGetRewards = () => {
   const { data: store, error: storeError, isLoading: storeLoading } = useGetStore()
-  const storeId = store?.id
 
-  const query = useQuery({
-    queryKey: ["getRewards", storeId],
-    queryFn: () => getRewards({ storeId: storeId ?? null }),
-    enabled: !!storeId,
-  })
+  const query = useGetRewardsByStoreId({ storeId: store?.id ?? null })
 
   return { ...query, rewards: query.data, isLoading: query.isLoading || storeLoading, error: query.error || storeError }
 }

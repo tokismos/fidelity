@@ -1,6 +1,7 @@
 import React from "react"
-import { View, Text } from "react-native"
+import { View, Text, Pressable } from "react-native"
 import { FlashList } from "@shopify/flash-list"
+import { Link } from "expo-router"
 
 type Store = {
   id: string
@@ -19,10 +20,12 @@ type StoreGridProps = {
 
 const StoreCard = ({ store, points }: Omit<UserStore, "id">) => {
   return (
-    <View className="m-2 flex-1 rounded-lg bg-white p-4 shadow-lg">
-      <Text className="mb-2 text-xl font-bold">{store.name}</Text>
-      <Text className="text-gray-600">Points: {points}</Text>
-    </View>
+    <Link href={`/user/${store.id}`} asChild>
+      <Pressable onPress={() => console.log("hi")} className="m-2 flex-1 rounded-lg bg-white p-4 shadow-lg">
+        <Text className="mb-2 text-xl font-bold">{store.name}</Text>
+        <Text className="text-gray-600">Points: {points}</Text>
+      </Pressable>
+    </Link>
   )
 }
 const StoreGrid = ({ userStores }: StoreGridProps) => {

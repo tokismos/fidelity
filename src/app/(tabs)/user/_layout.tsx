@@ -25,6 +25,12 @@ export default function UserLayout() {
           title: "This is USER SCREEN",
         }}
       />
+      <Tabs.Screen
+        name="[storeId]"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   )
 }

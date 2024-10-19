@@ -8,3 +8,5 @@ export enum Role {
 export type Stores = Tables<"stores">
 
 export type UserId = string | null
+
+export type StoreId = { storeId: string | null }
