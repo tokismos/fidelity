@@ -16,7 +16,7 @@ export default function Index() {
   if (isLoading) return <View className="flex-1 bg-black" />
 
   if (session) {
-    return <Redirect href={isAdmin ? "/admin/home" : "/user/home"} />
+    return <Redirect href={isAdmin ? "/admin/(tabs)/home" : "/user/(tabs)/home"} />
   }
 
   return <Redirect href="/sign-in" />
