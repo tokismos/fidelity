@@ -1,8 +1,8 @@
 import { getRewards } from "@/api/getRewards"
-import { StoreId } from "@/types"
+import { Id } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 
-export const useGetRewardsByStoreId = ({ storeId }: StoreId) => {
+export const useGetRewardsByStoreId = ({ storeId }: { storeId: Id }) => {
   const query = useQuery({
     queryKey: ["getRewards", storeId],
     queryFn: () => getRewards({ storeId }),

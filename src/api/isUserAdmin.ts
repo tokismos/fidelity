@@ -1,7 +1,7 @@
-import { Role, UserId } from "@/types"
+import { Id, Role } from "@/types"
 import { supabase } from "@/utils/supabase"
 
-export const isUserAdmin = async (userId: UserId) => {
+export const isUserAdmin = async (userId: Id) => {
   if (!userId) return null
 
   try {

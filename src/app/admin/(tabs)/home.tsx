@@ -24,7 +24,7 @@ export default function Home() {
           <Image source={{ uri: store.image_url }} className="mb-2 h-24 w-24 rounded-full" />
           <Text className="text-xl font-semibold">{store.name}</Text>
           <Link href={"/admin/scanner"} asChild>
-            <Pressable onPress={() => console.log("hi")} className="m-2rounded-lg bg-white p-4 shadow-lg">
+            <Pressable className="m-2rounded-lg bg-white p-4 shadow-lg">
               <Text className="text-gray-600">Open camera</Text>
             </Pressable>
           </Link>

@@ -1,4 +1,4 @@
-import { Database, Tables } from "./database.types"
+import { Tables } from "./database.types"
 
 export enum Role {
   ADMIN = "admin",
@@ -7,6 +7,4 @@ export enum Role {
 
 export type Stores = Tables<"stores">
 
-export type UserId = string | null
-
-export type StoreId = { storeId: string | null }
+export type Id = string | null

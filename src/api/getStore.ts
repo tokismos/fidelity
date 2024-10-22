@@ -1,7 +1,7 @@
-import { UserId } from "@/types"
+import { Id } from "@/types"
 import { supabase } from "@/utils/supabase"
 
-export const getStore = async ({ userId }: { userId: UserId }) => {
+export const getStore = async ({ userId }: { userId: Id }) => {
   if (!userId) return null
 
   try {

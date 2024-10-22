@@ -1,9 +1,9 @@
-import { Stores, UserId } from "@/types"
+import { Id, Stores } from "@/types"
 import { supabase } from "@/utils/supabase"
 
 type Props = {
   storeName: Stores["name"]
-  userId: UserId
+  userId: Id
 }
 
 export const addStore = async ({ storeName, userId }: Props) => {
