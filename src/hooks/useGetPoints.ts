@@ -6,10 +6,10 @@ import { Id } from "@/types"
 export const useGetPoints = ({ userId }: { userId: Id }) => {
   const { data: store, error: storeError, isLoading: storeLoading } = useGetStore()
 
-  const storeId = store?.id ?? null
+  const storeId = store?.id
 
   const query = useQuery({
-    queryKey: ["getUserPoints", storeId],
+    queryKey: ["getUserPoints", { userId, storeId }],
     queryFn: () => getUserPoints({ userId, storeId }),
     enabled: !!storeId && !!userId,
   })

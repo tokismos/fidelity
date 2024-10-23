@@ -7,4 +7,6 @@ export enum Role {
 
 export type Stores = Tables<"stores">
 
-export type Id = string | null
+export type Id = string | null | undefined
+
+export type UserStore = Omit<Tables<"user_stores">, "created_at">

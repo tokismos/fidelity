@@ -317,3 +317,7 @@ as permissive
 for select
 to public
 using (true);
+
+CREATE UNIQUE INDEX unique_user_store ON public.user_stores USING btree (user_id, store_id);
+
+alter table "public"."user_stores" add constraint "unique_user_store" UNIQUE using index "unique_user_store";

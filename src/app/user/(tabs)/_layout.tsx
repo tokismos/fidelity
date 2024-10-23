@@ -12,19 +12,9 @@ export default function UserLayout() {
   }
 
   return (
-    <Tabs screenOptions={{ headerShown: false }}>
-      <Tabs.Screen
-        name="home"
-        options={{
-          title: "This is USER SCREEN",
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "This is USER SCREEN",
-        }}
-      />
+    <Tabs screenOptions={{ headerShown: false }} initialRouteName="profile">
+      <Tabs.Screen name="home" />
+      <Tabs.Screen name="profile" />
       <Tabs.Screen
         name="[storeId]"
         options={{
