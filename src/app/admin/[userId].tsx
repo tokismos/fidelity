@@ -12,9 +12,9 @@ export default function UserProfile() {
   const [customPoints, setCustomPoints] = useState("")
   const [selectedTab, setSelectedTab] = useState<"points" | "history">("points")
   const [isAddMode, setIsAddMode] = useState(true)
+
   const { userPoints, isLoading, error, isFetching, data } = useGetPoints({ userId })
   const { addUserToStore, isPending, error: userToStoreError } = useAddUserToStore()
-
   const { updatePoints, error: updatePointsError } = useUpdatePoints({ userId, storeId: data?.store_id })
 
   const handleAddUserToStore = ({ userId }: { userId: Id }) => {
@@ -35,11 +35,9 @@ export default function UserProfile() {
     ])
   }
 
-  const handlePointsUpdate = (points: number) => {
-    const pointsChange = isAddMode ? Math.abs(points) : -Math.abs(points)
-
-    updatePoints({ pointsChange })
-    console.log(`${isAddMode ? "Adding" : "Subtracting"} ${points} points`)
+  const handlePointsUpdate = (amount: number) => {
+    updatePoints({ amount, operationType: isAddMode ? "add" : "subtract" })
+    console.log(`${isAddMode ? "Adding" : "Subtracting"} ${amount} points`)
   }
 
   useEffect(() => {
@@ -50,6 +48,12 @@ export default function UserProfile() {
       ])
     }
   }, [userPoints, isFetching, userId])
+
+  useEffect(() => {
+    if (updatePointsError) {
+      Alert.alert("The user dont have enough points balance")
+    }
+  }, [updatePointsError])
 
   if (isLoading || isPending) {
     return (

@@ -34,6 +34,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      history: {
+        Row: {
+          created_at: string
+          id: string
+          new_points: number
+          operation_type: Database["public"]["Enums"]["operation_type"]
+          previous_points: number
+          store_id: string
+          transaction_amount: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          new_points: number
+          operation_type: Database["public"]["Enums"]["operation_type"]
+          previous_points: number
+          store_id: string
+          transaction_amount: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          new_points?: number
+          operation_type?: Database["public"]["Enums"]["operation_type"]
+          previous_points?: number
+          store_id?: string
+          transaction_amount?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "history_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string | null
@@ -178,9 +226,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      update_points_with_history: {
+        Args: {
+          p_user_id: string
+          p_store_id: string
+          p_transaction_amount: number
+          p_operation_type: Database["public"]["Enums"]["operation_type"]
+        }
+        Returns: Json
+      }
     }
     Enums: {
+      operation_type: "add" | "subtract" | "reward_redemption"
       role: "user" | "admin"
     }
     CompositeTypes: {
