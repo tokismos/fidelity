@@ -35,7 +35,7 @@ AS $function$declare
   v_new_points integer;
 begin
 
-  -- Get current points (or initialize if not exists)
+  -- Get current points
   select points into v_current_points
   from user_stores
   where user_id = p_user_id and store_id = p_store_id;

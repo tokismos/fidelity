@@ -6,6 +6,8 @@ import { useEffect, useState } from "react"
 import { Alert, Pressable, Text, TextInput, View, ScrollView, SafeAreaView } from "react-native"
 import { AntDesign, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons"
 import { useUpdatePoints } from "@/hooks/useUpdatePoints"
+import { useGetUserHistory } from "@/hooks/useGetUserHistory"
+import { FlashList } from "@shopify/flash-list"
 
 export default function UserProfile() {
   const { userId } = useLocalSearchParams<{ userId: string }>()
@@ -16,11 +18,35 @@ export default function UserProfile() {
   const { userPoints, isLoading, error, isFetching, data } = useGetPoints({ userId })
   const { addUserToStore, isPending, error: userToStoreError } = useAddUserToStore()
   const { updatePoints, error: updatePointsError } = useUpdatePoints({ userId, storeId: data?.store_id })
+  const { userHistory = [] } = useGetUserHistory({ userId, storeId: data?.store_id })
 
   const handleAddUserToStore = ({ userId }: { userId: Id }) => {
     addUserToStore({ userId })
   }
-
+  const TransactionItem = ({ item, isLastItem }: { item: any; isLastItem: boolean }) => (
+    <Pressable className={`flex-row items-center justify-between p-4 ${!isLastItem ? "border-b border-gray-100" : ""}`}>
+      <View className="flex-row items-center space-x-4">
+        <View
+          className={`h-12 w-12 items-center justify-center rounded-2xl ${
+            item.operation_type === "add" ? "bg-green-100" : "bg-red-100"
+          }`}
+        >
+          <AntDesign
+            name={item.operation_type === "add" ? "plus" : "minus"}
+            size={24}
+            color={item.operation_type === "add" ? "#16a34a" : "#dc2626"}
+          />
+        </View>
+        <View>
+          <Text className="text-sm text-gray-500">{readableDate(item.created_at)}</Text>
+        </View>
+      </View>
+      <Text className={`text-lg font-medium ${item.operation_type === "add" ? "text-green-600" : "text-red-600"}`}>
+        {item.operation_type === "add" ? "+" : "-"}
+        {item.transaction_amount}
+      </Text>
+    </Pressable>
+  )
   const showConfirmationDialog = (points: number) => {
     Alert.alert("Confirm Transaction", `${isAddMode ? "Award" : "Deduct"} ${points} points?`, [
       { text: "Cancel", style: "cancel" },
@@ -51,7 +77,7 @@ export default function UserProfile() {
 
   useEffect(() => {
     if (updatePointsError) {
-      Alert.alert("The user dont have enough points balance")
+      Alert.alert("ERROR", updatePointsError.message)
     }
   }, [updatePointsError])
 
@@ -79,7 +105,16 @@ export default function UserProfile() {
     { id: 5, type: "subtract", points: 30, reason: "Prize Claim", date: "2024-02-16" },
     { id: 6, type: "add", points: 100, reason: "Referral Bonus", date: "2024-02-15" },
   ]
-
+  const readableDate = (created_at: string) => {
+    const date = new Date(created_at)
+    return date.toLocaleDateString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  }
   const quickPoints = [10, 25, 50, 100, 250, 500]
 
   return (
@@ -109,7 +144,7 @@ export default function UserProfile() {
       </View>
 
       {selectedTab === "points" ? (
-        <ScrollView className="flex-1">
+        <View className="flex-1">
           {/* Points Overview Card */}
           <View className="mx-4 mb-4 rounded-3xl bg-white shadow-md">
             <View className="p-6">
@@ -188,9 +223,9 @@ export default function UserProfile() {
               ))}
             </View>
           </View>
-        </ScrollView>
+        </View>
       ) : (
-        <ScrollView className="flex-1">
+        <View className="flex-1">
           {/* History Header Card */}
           <View className="mx-4 mb-4 rounded-3xl bg-white p-6 shadow-md">
             <View className="flex-row items-center justify-between">
@@ -206,39 +241,19 @@ export default function UserProfile() {
           </View>
 
           {/* History List */}
-          <View className="mx-4 overflow-hidden rounded-3xl bg-white shadow-md">
-            {history.map((item, index) => (
-              <Pressable
-                key={item.id}
-                className={`flex-row items-center justify-between p-4 ${
-                  index !== history.length - 1 ? "border-b border-gray-100" : ""
-                }`}
-              >
-                <View className="flex-row items-center space-x-4">
-                  <View
-                    className={`h-12 w-12 items-center justify-center rounded-2xl ${
-                      item.type === "add" ? "bg-green-100" : "bg-red-100"
-                    }`}
-                  >
-                    <AntDesign
-                      name={item.type === "add" ? "plus" : "minus"}
-                      size={24}
-                      color={item.type === "add" ? "#16a34a" : "#dc2626"}
-                    />
-                  </View>
-                  <View>
-                    <Text className="text-lg font-medium">{item.reason}</Text>
-                    <Text className="text-sm text-gray-500">{item.date}</Text>
-                  </View>
-                </View>
-                <Text className={`text-lg font-medium ${item.type === "add" ? "text-green-600" : "text-red-600"}`}>
-                  {item.type === "add" ? "+" : "-"}
-                  {item.points}
-                </Text>
-              </Pressable>
-            ))}
+          <View className="mx-4 flex-1">
+            <FlashList
+              data={userHistory}
+              estimatedItemSize={72} // Approximate height of each item
+              renderItem={({ item, index }) => (
+                <TransactionItem item={item} isLastItem={index === userHistory.length - 1} />
+              )}
+              keyExtractor={(item) => item.id.toString()}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingBottom: 20 }}
+            />
           </View>
-        </ScrollView>
+        </View>
       )}
     </SafeAreaView>
   )
