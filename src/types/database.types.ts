@@ -110,39 +110,41 @@ export type Database = {
       }
       rewards: {
         Row: {
+          config: Json
+          cost_points: boolean | null
           created_at: string
           description: string | null
           id: string
-          points_cost: number
+          status: Database["public"]["Enums"]["reward_status"]
           store_id: string
           title: string
+          type: Database["public"]["Enums"]["reward_types"]
         }
         Insert: {
+          config: Json
+          cost_points?: boolean | null
           created_at?: string
           description?: string | null
           id?: string
-          points_cost: number
+          status?: Database["public"]["Enums"]["reward_status"]
           store_id: string
           title: string
+          type: Database["public"]["Enums"]["reward_types"]
         }
         Update: {
+          config?: Json
+          cost_points?: boolean | null
           created_at?: string
           description?: string | null
           id?: string
-          points_cost?: number
+          status?: Database["public"]["Enums"]["reward_status"]
           store_id?: string
           title?: string
+          type?: Database["public"]["Enums"]["reward_types"]
         }
         Relationships: [
           {
-            foreignKeyName: "rewards_store_id_fkey"
-            columns: ["store_id"]
-            isOneToOne: false
-            referencedRelation: "stores"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "rewards_store_id_fkey1"
+            foreignKeyName: "reward_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
             referencedRelation: "stores"
@@ -226,6 +228,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_cost_points_required_types: {
+        Args: Record<PropertyKey, never>
+        Returns: string[]
+      }
       update_points_with_history: {
         Args: {
           p_user_id: string
@@ -235,9 +241,30 @@ export type Database = {
         }
         Returns: Json
       }
+      validate_numeric_value: {
+        Args: {
+          key: string
+          value: number
+        }
+        Returns: undefined
+      }
+      validate_string_value: {
+        Args: {
+          key: string
+          value: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       operation_type: "add" | "subtract" | "reward_redemption"
+      reward_status: "active" | "paused"
+      reward_types:
+        | "BUY_N_GET_1"
+        | "DISCOUNT_PERCENTAGE"
+        | "DISCOUNT_FIX"
+        | "FREE_ITEM"
+        | "FREE_ITEM_WITH_PURCHASE"
       role: "user" | "admin"
     }
     CompositeTypes: {

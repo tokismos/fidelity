@@ -1,9 +1,9 @@
-import { ActivityIndicator, TouchableOpacity, View, Text } from "react-native"
+import { ActivityIndicator, View, Text, Pressable } from "react-native"
 
 type Props = { isLoading: boolean; title: string; onPress: () => void }
 
 export const ButtonWithIndicator = ({ isLoading, title, onPress }: Props) => (
-  <TouchableOpacity onPress={onPress} className={`mb-4 w-full rounded-lg bg-blue-600 py-3`} disabled={isLoading}>
+  <Pressable onPress={onPress} className={`mb-4 w-full rounded-lg bg-blue-600 py-3`} disabled={isLoading}>
     {isLoading ? (
       <View className="flex-row items-center justify-center">
         <ActivityIndicator size="small" color="#ffffff" />
@@ -12,5 +12,5 @@ export const ButtonWithIndicator = ({ isLoading, title, onPress }: Props) => (
     ) : (
       <Text className="text-center text-lg font-semibold text-white">{title}</Text>
     )}
-  </TouchableOpacity>
+  </Pressable>
 )

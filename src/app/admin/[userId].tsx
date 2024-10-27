@@ -244,7 +244,7 @@ export default function UserProfile() {
           <View className="mx-4 flex-1">
             <FlashList
               data={userHistory}
-              estimatedItemSize={72} // Approximate height of each item
+              estimatedItemSize={72}
               renderItem={({ item, index }) => (
                 <TransactionItem item={item} isLastItem={index === userHistory.length - 1} />
               )}

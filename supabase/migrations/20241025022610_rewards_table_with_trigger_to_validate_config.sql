@@ -75,23 +75,19 @@ $function$
 CREATE OR REPLACE FUNCTION public.validate_reward_config()
  RETURNS trigger
  LANGUAGE plpgsql
-AS $function$DECLARE
+AS $function$
+DECLARE
     allowed_keys text[];
     config_keys text[];
     base_key_map jsonb;
     key text;
     value_type text;
+    numeric_value numeric;
+
 BEGIN
 
-IF NEW.type::text IN (SELECT unnest(get_cost_points_required_types())) THEN
-    IF NOT NEW.cost_points THEN
-        RAISE EXCEPTION 'cost_points must be true for reward type: %', NEW.type;
-    END IF;
-ELSE
-    IF NEW.cost_points THEN
-        RAISE EXCEPTION 'cost_points must be false for reward type: %', NEW.type;
-    END IF;
-END IF;
+    NEW.cost_points := NEW.type::text = ANY(get_cost_points_required_types());
+
 
     -- ADD NEW REWARD TYPES AND THEIR KEY HERE
     base_key_map := jsonb_build_object(
@@ -102,15 +98,16 @@ END IF;
         'FREE_ITEM_WITH_PURCHASE', jsonb_build_array('item_name', 'free_item_name')
     );
 
+    -- Validate basic structure
     IF NEW.config IS NULL THEN
         RAISE EXCEPTION 'Config cannot be null';
     END IF;
+
 
     -- Get allowed and config keys
     allowed_keys := ARRAY(
         SELECT jsonb_array_elements_text(base_key_map -> NEW.type::text)
     );
-
     config_keys := ARRAY(
         SELECT jsonb_object_keys(NEW.config)
     );
@@ -152,7 +149,8 @@ END IF;
     END LOOP;
 
     RETURN NEW;
-END;$function$
+END;
+$function$
 ;
 
 CREATE OR REPLACE FUNCTION public.validate_string_value(key text, value text)
