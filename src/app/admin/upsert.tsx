@@ -1,5 +1,7 @@
 import { ButtonWithIndicator } from "@/components/ButtonWithIndicator"
 import { useAddReward } from "@/hooks/useAddReward"
+import { useGetRewardById } from "@/hooks/useGetRewardById"
+import { useUpdateReward } from "@/hooks/useUpdateReward"
 import {
   BuyNGet1Config,
   DiscountFixConfig,
@@ -10,7 +12,7 @@ import {
   REWARD_TYPES,
 } from "@/types"
 import { useLocalSearchParams } from "expo-router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { View, Text, ScrollView, TextInput, TextInputProps } from "react-native"
 
 const FormField = ({
@@ -34,9 +36,11 @@ const FormField = ({
 
 type FormDataProps<T extends REWARD_TYPES> = Omit<Reward<T>, "storeId" | "status">
 
-export default function CreateRewardScreen() {
-  const { type } = useLocalSearchParams<{ type: REWARD_TYPES }>()
+export default function UpsertRewardScreen() {
+  const { type, rewardId } = useLocalSearchParams<{ type: REWARD_TYPES; rewardId: string }>()
+  const { rewardById, isLoading, error } = useGetRewardById({ rewardId })
 
+  const isEditMode = Boolean(rewardId)
   const [formData, setFormData] = useState<FormDataProps<typeof type>>({
     title: "",
     description: "",
@@ -45,6 +49,13 @@ export default function CreateRewardScreen() {
   })
 
   const { addReward, isPending } = useAddReward()
+  const { updateReward, isPending: updateIsPending } = useUpdateReward({ rewardId })
+
+  useEffect(() => {
+    if (rewardById) {
+      setFormData(rewardById)
+    }
+  }, [rewardById])
 
   const renderConfigFields = () => {
     switch (type) {
@@ -175,9 +186,10 @@ export default function CreateRewardScreen() {
   }
 
   const handleSubmit = () => {
-    console.log("Submitting reward:", {
-      ...formData,
-    })
+    if (isEditMode) {
+      updateReward({ updatedReward: formData })
+      return
+    }
     addReward({ ...formData })
   }
 
@@ -204,7 +216,11 @@ export default function CreateRewardScreen() {
         <Text className="mb-4 text-lg font-semibold">Reward Configuration</Text>
         {renderConfigFields()}
 
-        <ButtonWithIndicator title="Create reward" isLoading={isPending} onPress={handleSubmit} />
+        <ButtonWithIndicator
+          title={isEditMode ? "Update reward" : "Create reward"}
+          isLoading={isPending || updateIsPending}
+          onPress={handleSubmit}
+        />
       </View>
     </ScrollView>
   )

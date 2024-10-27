@@ -5,7 +5,7 @@ export default function AdminRootLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="scanner" />
-      <Stack.Screen name="create" />
+      <Stack.Screen name="upsert" />
     </Stack>
   )
 }

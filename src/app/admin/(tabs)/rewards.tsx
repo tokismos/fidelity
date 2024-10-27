@@ -4,11 +4,12 @@ import { Ionicons } from "@expo/vector-icons"
 import { FlashList } from "@shopify/flash-list"
 import { useGetRewards } from "@/hooks/useGetRewards"
 import { useDeleteReward } from "@/hooks/useDeleteReward"
+import { useRouter } from "expo-router"
 
 export default function Rewards() {
   const { rewards, isLoading, error } = useGetRewards()
   const { deleteReward, isPending, error: deleteError } = useDeleteReward()
-
+  const router = useRouter()
   const handleDelete = (rewardId) => {
     Alert.alert(
       "Delete Reward",
@@ -25,6 +26,9 @@ export default function Rewards() {
     )
   }
 
+  const handleEdit = ({ rewardId, type }) => {
+    router.push({ pathname: "/admin/upsert", params: { rewardId, type } })
+  }
   const renderRewardDetails = (reward) => {
     switch (reward.type) {
       case "BUY_N_GET_1":
@@ -76,6 +80,14 @@ export default function Rewards() {
           ) : (
             <Ionicons name="trash-outline" size={24} color="#EF4444" />
           )}
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => handleEdit({ rewardId: item.id, type: item.type })}
+          className="ml-4"
+          disabled={isPending}
+        >
+          <Ionicons name="eyedrop-outline" size={24} color="#EF4444" />
         </TouchableOpacity>
       </View>
     ),

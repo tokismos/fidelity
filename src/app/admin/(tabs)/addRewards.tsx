@@ -76,7 +76,7 @@ export default function AddRewardsScreen() {
           title={reward.title}
           description={reward.description}
           icon={reward.icon}
-          onPress={() => router.push({ pathname: "/admin/create", params: { type: reward.type } })}
+          onPress={() => router.push({ pathname: "/admin/upsert", params: { type: reward.type } })}
         />
       ))}
     </ScrollView>
