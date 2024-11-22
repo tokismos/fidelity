@@ -116,7 +116,7 @@ export default function Rewards() {
   return (
     <View className="flex-1 bg-gray-50 p-4">
       <Text className="mb-4 text-2xl font-bold text-gray-800">Your Rewards</Text>
-      {rewards.length === 0 ? (
+      {rewards?.length === 0 ? (
         <View className="flex-1 items-center justify-center">
           <Ionicons name="gift-outline" size={64} color="#9CA3AF" />
           <Text className="mt-2 text-lg text-gray-500">No rewards available.</Text>

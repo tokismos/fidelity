@@ -1,4 +1,5 @@
 import { ButtonWithIndicator } from "@/components/ButtonWithIndicator"
+import { CapturePhoto } from "@/components/CapturePhoto"
 import { useAddReward } from "@/hooks/useAddReward"
 import { useGetRewardById } from "@/hooks/useGetRewardById"
 import { useUpdateReward } from "@/hooks/useUpdateReward"
@@ -47,7 +48,6 @@ export default function UpsertRewardScreen() {
     type,
     config: {},
   })
-
   const { addReward, isPending } = useAddReward()
   const { updateReward, isPending: updateIsPending } = useUpdateReward({ rewardId })
 
@@ -192,7 +192,6 @@ export default function UpsertRewardScreen() {
     }
     addReward({ ...formData })
   }
-
   return (
     <ScrollView className="flex-1 bg-gray-50 p-4">
       <Text className="mb-6 text-2xl font-bold">Create New Reward</Text>
@@ -222,6 +221,7 @@ export default function UpsertRewardScreen() {
           onPress={handleSubmit}
         />
       </View>
+      <CapturePhoto />
     </ScrollView>
   )
 }
