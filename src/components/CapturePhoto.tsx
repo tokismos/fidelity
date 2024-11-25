@@ -1,11 +1,11 @@
 import * as ImagePicker from "expo-image-picker"
-import { useState } from "react"
 import { Image, Text, TouchableOpacity, View } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 
-export const CapturePhoto = () => {
+type Props = { image?: string | null; setImage: (arg: string | null) => void }
+
+export const CapturePhoto = ({ image, setImage }: Props) => {
   const [status, requestPermission] = ImagePicker.useCameraPermissions()
-  const [image, setImage] = useState<string | null>(null)
 
   const takePhoto = async () => {
     if (!status?.granted) {

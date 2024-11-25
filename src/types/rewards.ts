@@ -13,6 +13,7 @@ export enum REWARD_STATUS {
 
 export type BuyNGet1Config = {
   required_purchases: number
+  image_path: string
 }
 
 export type DiscountPercentageConfig = {
