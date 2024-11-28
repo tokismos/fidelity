@@ -25,7 +25,7 @@ type StoreGridProps = {
 const StoreCard = ({ store, points }: Omit<UserStoreWithName, "id">) => {
   return (
     <Link href={`/user/${store.id}`} asChild>
-      <Pressable onPress={() => {}} className="m-2 flex-1 rounded-lg bg-white p-4 shadow-lg">
+      <Pressable className="m-2 flex-1 rounded-lg bg-white p-4 shadow-lg">
         <Text className="mb-2 text-xl font-bold">{store.name}</Text>
         <Text className="text-gray-600">Points: {points}</Text>
       </Pressable>

@@ -1,13 +1,12 @@
 import { supabase } from "@/utils/supabase"
-import { Session, User } from "@supabase/supabase-js"
+import { Session } from "@supabase/supabase-js"
 import { PropsWithChildren, createContext, useEffect, useState } from "react"
 import { isUserAdmin } from "@/api"
-import { Id } from "@/types"
 
 type AuthData = {
   session: Session | null
   isLoading: boolean
-  userId: Id
+  userId: string
   isAdmin: boolean | null
 }
 

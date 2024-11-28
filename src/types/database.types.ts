@@ -111,7 +111,7 @@ export type Database = {
       rewards: {
         Row: {
           config: Json
-          cost_points: boolean | null
+          cost_points: boolean
           created_at: string
           description: string | null
           id: string
@@ -122,18 +122,18 @@ export type Database = {
         }
         Insert: {
           config: Json
-          cost_points?: boolean | null
+          cost_points: boolean
           created_at?: string
           description?: string | null
           id?: string
-          status?: Database["public"]["Enums"]["reward_status"]
+          status: Database["public"]["Enums"]["reward_status"]
           store_id: string
           title: string
           type: Database["public"]["Enums"]["reward_types"]
         }
         Update: {
           config?: Json
-          cost_points?: boolean | null
+          cost_points?: boolean
           created_at?: string
           description?: string | null
           id?: string
@@ -178,6 +178,48 @@ export type Database = {
           {
             foreignKeyName: "stores_owner_id_fkey1"
             columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_rewards: {
+        Row: {
+          config: Json
+          created_at: string
+          id: string
+          reward_id: string
+          status: Database["public"]["Enums"]["user_reward_status"]
+          user_id: string
+        }
+        Insert: {
+          config: Json
+          created_at?: string
+          id?: string
+          reward_id: string
+          status?: Database["public"]["Enums"]["user_reward_status"]
+          user_id: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          id?: string
+          reward_id?: string
+          status?: Database["public"]["Enums"]["user_reward_status"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_rewards_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "rewards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_rewards_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -266,6 +308,7 @@ export type Database = {
         | "FREE_ITEM"
         | "FREE_ITEM_WITH_PURCHASE"
       role: "user" | "admin"
+      user_reward_status: "redeemed" | "canceled" | "used"
     }
     CompositeTypes: {
       [_ in never]: never

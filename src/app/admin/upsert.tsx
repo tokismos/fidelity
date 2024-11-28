@@ -6,7 +6,7 @@ import { useRewardSubmit } from "@/hooks/useRewardSubmit"
 import { Reward, REWARD_TYPES } from "@/types"
 import { useLocalSearchParams } from "expo-router"
 import { useEffect, useState } from "react"
-import { View, Text, ScrollView } from "react-native"
+import { View, Text, ScrollView, TextInput, TextInputProps } from "react-native"
 
 type FormDataProps<T extends REWARD_TYPES> = Omit<Reward<T>, "storeId" | "status"> & { image: string | null }
 
