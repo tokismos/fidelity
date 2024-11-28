@@ -113,7 +113,7 @@ export type Database = {
           config: Json
           cost_points: boolean
           created_at: string
-          description: string | null
+          description: string
           id: string
           status: Database["public"]["Enums"]["reward_status"]
           store_id: string
@@ -124,7 +124,7 @@ export type Database = {
           config: Json
           cost_points: boolean
           created_at?: string
-          description?: string | null
+          description: string
           id?: string
           status: Database["public"]["Enums"]["reward_status"]
           store_id: string
@@ -135,7 +135,7 @@ export type Database = {
           config?: Json
           cost_points?: boolean
           created_at?: string
-          description?: string | null
+          description?: string
           id?: string
           status?: Database["public"]["Enums"]["reward_status"]
           store_id?: string
