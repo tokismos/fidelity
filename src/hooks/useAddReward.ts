@@ -4,14 +4,12 @@ import { addReward } from "@/api/addReward"
 import { useGetStore } from "./useGetStore"
 import { Reward } from "@/types"
 
-type Props = Omit<Reward, "storeId">
-
 export const useAddReward = () => {
   const queryClient = useQueryClient()
   const { data: store, error, isLoading } = useGetStore()
 
   const mutation = useMutation({
-    mutationFn: ({ title, description, config, type }: Props) => {
+    mutationFn: ({ title, description, config, type }: Reward) => {
       if (!store) {
         throw new Error("Error, there is no store.")
       }
@@ -21,7 +19,7 @@ export const useAddReward = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["getRewards"] }),
   })
 
-  const addNewReward = ({ title, description, config, type }: Props) => {
+  const addNewReward = ({ title, description, config, type }: Reward) => {
     if (isLoading) {
       console.log("Fetching the store is still loading")
       return

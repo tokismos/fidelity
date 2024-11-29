@@ -18,7 +18,7 @@ export default function QrScanner() {
   const handleBarCodeScanned = (result: BarcodeScanningResult) => {
     if (scanned) return
     setScanned(true)
-    router.replace(`/admin/${result.data}`)
+    router.replace(`/admin/scannedProfile/${result.data}`)
   }
 
   return (

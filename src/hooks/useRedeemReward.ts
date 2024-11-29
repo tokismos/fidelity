@@ -2,7 +2,7 @@ import { redeemReward } from "@/api/redeemReward"
 import { Reward } from "@/types"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-type Props = { userId: string; rewardId: string; config: Reward["config"] }
+type Props = { userId: string; rewardId: string; config: Reward["config"]; storeId: string }
 
 export const useRedeemReward = () => {
   const queryClient = useQueryClient()
@@ -10,11 +10,11 @@ export const useRedeemReward = () => {
   const mutation = useMutation({
     mutationFn: redeemReward,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["useGetUserRedeemedRewards"] })
+      queryClient.invalidateQueries({ queryKey: ["useGetUserRedeemedRewardsIds"] })
     },
   })
-  const redeemRewardMutation = ({ userId, rewardId, config }: Props) => {
-    mutation.mutate({ userId, rewardId, config })
+  const redeemRewardMutation = ({ userId, rewardId, config, storeId }: Props) => {
+    mutation.mutate({ userId, rewardId, config, storeId })
   }
 
   return { redeemReward: redeemRewardMutation, ...mutation }

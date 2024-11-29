@@ -49,5 +49,16 @@ export interface Reward {
   description: string
   type: REWARD_TYPES
   config: RewardConfig
-  store_id: string
+  storeId?: string
+}
+
+export type RedeemedReward = {
+  id: string
+  status: "redeemed" | "canceled" | "used"
+  config: RewardConfig
+  reward: {
+    id: string
+    title: string
+    description: string
+  }
 }

@@ -191,6 +191,7 @@ export type Database = {
           id: string
           reward_id: string
           status: Database["public"]["Enums"]["user_reward_status"]
+          store_id: string
           user_id: string
         }
         Insert: {
@@ -199,6 +200,7 @@ export type Database = {
           id?: string
           reward_id: string
           status?: Database["public"]["Enums"]["user_reward_status"]
+          store_id: string
           user_id: string
         }
         Update: {
@@ -207,6 +209,7 @@ export type Database = {
           id?: string
           reward_id?: string
           status?: Database["public"]["Enums"]["user_reward_status"]
+          store_id?: string
           user_id?: string
         }
         Relationships: [
@@ -215,6 +218,13 @@ export type Database = {
             columns: ["reward_id"]
             isOneToOne: false
             referencedRelation: "rewards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_rewards_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
             referencedColumns: ["id"]
           },
           {

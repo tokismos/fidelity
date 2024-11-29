@@ -1,8 +1,9 @@
 import { ButtonWithIndicator } from "@/components/ButtonWithIndicator"
 import { useAuth } from "@/hooks/useAuth"
 import { useGetRewardsByStoreId } from "@/hooks/useGetRewardsByStoreId"
-import { useGetUserRedeemedRewards } from "@/hooks/useGetUserRedeemedRewards"
+import { useGetUserRedeemedRewardIds } from "@/hooks/useGetUserRedeemedRewardIds"
 import { useRedeemReward } from "@/hooks/useRedeemReward"
+import { Reward } from "@/types"
 import { FlashList } from "@shopify/flash-list"
 import { Link, useLocalSearchParams } from "expo-router"
 import { useCallback } from "react"
@@ -13,19 +14,19 @@ export default function StoreRewards() {
 
   const { storeId } = useLocalSearchParams<{ storeId: string }>()
   const { rewards, error, isLoading } = useGetRewardsByStoreId({ storeId })
-  const { userRedeemedRewards, isLoading: redeemedLoading } = useGetUserRedeemedRewards({ userId, storeId })
+  const { userRedeemedRewards, isLoading: redeemedLoading } = useGetUserRedeemedRewardIds({ userId, storeId })
   const { redeemReward, isPending, error: redeemRewardError } = useRedeemReward()
 
   const renderItem = useCallback(
-    ({ item }: any) => {
+    ({ item }: { item: Reward }) => {
       const isRedeemed = userRedeemedRewards?.includes(item.id)
 
       return (
-        <Link href={`/user/reward/${item.rewardId}`} asChild>
+        <Link href={`/user/reward/${item.id}`} asChild>
           <Pressable className="mb-3 flex-row items-center justify-between rounded-lg bg-white p-4 shadow">
             <View className="flex-1">
               <Text className="text-lg font-bold text-gray-800">{item.title}</Text>
-              <Text className="text-base font-semibold text-blue-600">{item.points_cost} pts</Text>
+              <Text className="text-base font-semibold text-blue-600">{item.config.points_needed_value} pts</Text>
               {isRedeemed ? (
                 <Text className="text-sm text-gray-500">Redeemed</Text>
               ) : (
@@ -41,7 +42,7 @@ export default function StoreRewards() {
                       {
                         text: "Redeem",
                         onPress: () => {
-                          redeemReward({ userId, rewardId: item.id, config: item.config })
+                          redeemReward({ userId, rewardId: item.id, config: item.config, storeId: item.store_id })
                         },
                       },
                     ])

@@ -21,12 +21,6 @@ export default function UserLayout() {
           href: null,
         }}
       />
-      <Tabs.Screen
-        name="reward/[rewardId]"
-        options={{
-          href: null,
-        }}
-      />
     </Tabs>
   )
 }

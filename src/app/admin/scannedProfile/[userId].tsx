@@ -3,22 +3,28 @@ import { useGetPoints } from "@/hooks/useGetPoints"
 import { Id } from "@/types"
 import { useLocalSearchParams } from "expo-router"
 import { useEffect, useState } from "react"
-import { Alert, Pressable, Text, TextInput, View, ScrollView, SafeAreaView } from "react-native"
-import { AntDesign, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons"
+import { Alert, Pressable, Text, TextInput, View, SafeAreaView } from "react-native"
+import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons"
 import { useUpdatePoints } from "@/hooks/useUpdatePoints"
 import { useGetUserHistory } from "@/hooks/useGetUserHistory"
 import { FlashList } from "@shopify/flash-list"
+import { useGetRedeemedRewards } from "@/hooks/useGetRedeemedRewards"
+import { useGetStore } from "@/hooks/useGetStore"
 
 export default function UserProfile() {
   const { userId } = useLocalSearchParams<{ userId: string }>()
   const [customPoints, setCustomPoints] = useState("")
   const [selectedTab, setSelectedTab] = useState<"points" | "history">("points")
   const [isAddMode, setIsAddMode] = useState(true)
+  const {
+    data: { id: storeId },
+  } = useGetStore()
+  const { data: redeemedRewards, error: redeemedRewardsError } = useGetRedeemedRewards({ storeId, userId })
 
   const { userPoints, isLoading, error, isFetching, data } = useGetPoints({ userId })
   const { addUserToStore, isPending, error: userToStoreError } = useAddUserToStore()
   const { updatePoints, error: updatePointsError } = useUpdatePoints({ userId, storeId: data?.store_id })
-  const { userHistory = [] } = useGetUserHistory({ userId, storeId: data?.store_id })
+  const { userHistory } = useGetUserHistory({ userId, storeId: data?.store_id })
 
   const handleAddUserToStore = ({ userId }: { userId: Id }) => {
     addUserToStore({ userId })
@@ -243,10 +249,10 @@ export default function UserProfile() {
           {/* History List */}
           <View className="mx-4 flex-1">
             <FlashList
-              data={userHistory}
+              data={userHistory ?? []}
               estimatedItemSize={72}
               renderItem={({ item, index }) => (
-                <TransactionItem item={item} isLastItem={index === userHistory.length - 1} />
+                <TransactionItem item={item} isLastItem={index === (userHistory?.length ?? 0) - 1} />
               )}
               keyExtractor={(item) => item.id.toString()}
               showsVerticalScrollIndicator={false}

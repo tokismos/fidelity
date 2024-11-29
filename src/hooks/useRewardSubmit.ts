@@ -1,11 +1,11 @@
 import { useState } from "react"
 import { Alert } from "react-native"
-import { Reward, REWARD_TYPES } from "@/types"
+import { Reward } from "@/types"
 import { useAddReward } from "./useAddReward"
 import { useUpdateReward } from "./useUpdateReward"
 import { uploadImageToBucket } from "@/utils/uploadImageToBucket"
 
-type FormDataProps = Omit<Reward, "storeId"> & {
+type FormDataProps = Reward & {
   image?: string | null
 }
 
