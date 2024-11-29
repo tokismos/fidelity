@@ -1,8 +1,8 @@
 import { redeemReward } from "@/api/redeemReward"
-import { Id, Reward, REWARD_TYPES } from "@/types"
+import { Reward } from "@/types"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-type Props = { userId: string; rewardId: string; config: Reward<REWARD_TYPES>["config"] }
+type Props = { userId: string; rewardId: string; config: Reward["config"] }
 
 export const useRedeemReward = () => {
   const queryClient = useQueryClient()

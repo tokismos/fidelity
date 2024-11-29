@@ -1,4 +1,4 @@
-import { Reward, REWARD_TYPES } from "@/types"
+import { Reward } from "@/types"
 import { supabase } from "@/utils/supabase"
 
 export const redeemReward = async ({
@@ -8,7 +8,7 @@ export const redeemReward = async ({
 }: {
   userId: string
   rewardId: string
-  config: Reward<REWARD_TYPES>["config"]
+  config: Reward["config"]
 }) => {
   try {
     const { data, error } = await supabase.from("user_rewards").insert({

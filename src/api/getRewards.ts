@@ -2,7 +2,7 @@ import { Reward, RewardConfig } from "@/types"
 import { getImageUrl } from "@/utils/getImageUrl"
 import { supabase } from "@/utils/supabase"
 
-export const getRewards = async ({ storeId }: { storeId: string | null }): Promise<Reward[] | null> => {
+export const getRewards = async ({ storeId }: { storeId: string }): Promise<Reward[] | null> => {
   if (!storeId) return null
 
   try {

@@ -1,4 +1,4 @@
-import { Redirect, Stack, Tabs } from "expo-router"
+import { Redirect, Tabs } from "expo-router"
 import { useAuth } from "@/hooks/useAuth"
 import { View } from "react-native"
 
@@ -17,6 +17,12 @@ export default function UserLayout() {
       <Tabs.Screen name="profile" />
       <Tabs.Screen
         name="[storeId]"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="reward/[rewardId]"
         options={{
           href: null,
         }}

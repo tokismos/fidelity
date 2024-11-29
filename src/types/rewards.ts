@@ -49,5 +49,5 @@ export interface Reward {
   description: string
   type: REWARD_TYPES
   config: RewardConfig
-  store_id?: string
+  store_id: string
 }

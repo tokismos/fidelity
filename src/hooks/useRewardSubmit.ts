@@ -5,12 +5,12 @@ import { useAddReward } from "./useAddReward"
 import { useUpdateReward } from "./useUpdateReward"
 import { uploadImageToBucket } from "@/utils/uploadImageToBucket"
 
-type FormDataProps<T extends REWARD_TYPES> = Omit<Reward<T>, "storeId" | "status"> & {
-  image: string | null
+type FormDataProps = Omit<Reward, "storeId"> & {
+  image?: string | null
 }
 
 interface UseRewardSubmitProps {
-  rewardId?: string
+  rewardId: string
 }
 
 export const useRewardSubmit = ({ rewardId }: UseRewardSubmitProps) => {
@@ -30,7 +30,7 @@ export const useRewardSubmit = ({ rewardId }: UseRewardSubmitProps) => {
     }
   }
 
-  const submitReward = async (formData: FormDataProps<REWARD_TYPES>) => {
+  const submitReward = async (formData: FormDataProps) => {
     try {
       setIsSubmitting(true)
 

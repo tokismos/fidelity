@@ -2,9 +2,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { addReward } from "@/api/addReward"
 import { useGetStore } from "./useGetStore"
-import { Reward, REWARD_TYPES } from "@/types"
+import { Reward } from "@/types"
 
-type Props = Omit<Reward<REWARD_TYPES>, "storeId">
+type Props = Omit<Reward, "storeId">
 
 export const useAddReward = () => {
   const queryClient = useQueryClient()

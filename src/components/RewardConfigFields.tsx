@@ -11,13 +11,13 @@ import {
 } from "@/types"
 import { CapturePhoto } from "./CapturePhoto"
 
-type FormDataProps<T extends REWARD_TYPES> = Omit<Reward<T>, "storeId" | "status"> & { image: string | null }
+type FormDataProps = Omit<Reward, "storeId" | "status"> & { image?: string | null }
 
-type SetFormDataFunction<T extends REWARD_TYPES> = (updater: (prev: FormDataProps<T>) => FormDataProps<T>) => void
+type SetFormDataFunction = (updater: (prev: FormDataProps) => FormDataProps) => void
 type Props = {
   type: REWARD_TYPES
-  formData: FormDataProps<REWARD_TYPES>
-  setFormData: SetFormDataFunction<REWARD_TYPES>
+  formData: FormDataProps
+  setFormData: SetFormDataFunction
 }
 
 export const RewardConfigFields = ({ type, formData, setFormData }: Props) => {

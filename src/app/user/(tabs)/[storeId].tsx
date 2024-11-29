@@ -3,11 +3,10 @@ import { useAuth } from "@/hooks/useAuth"
 import { useGetRewardsByStoreId } from "@/hooks/useGetRewardsByStoreId"
 import { useGetUserRedeemedRewards } from "@/hooks/useGetUserRedeemedRewards"
 import { useRedeemReward } from "@/hooks/useRedeemReward"
-import { Id } from "@/types"
 import { FlashList } from "@shopify/flash-list"
-import { useLocalSearchParams } from "expo-router"
+import { Link, useLocalSearchParams } from "expo-router"
 import { useCallback } from "react"
-import { View, Text, Alert } from "react-native"
+import { View, Text, Alert, Pressable } from "react-native"
 
 export default function StoreRewards() {
   const { userId } = useAuth()
@@ -22,34 +21,36 @@ export default function StoreRewards() {
       const isRedeemed = userRedeemedRewards?.includes(item.id)
 
       return (
-        <View className="mb-3 flex-row items-center justify-between rounded-lg bg-white p-4 shadow">
-          <View className="flex-1">
-            <Text className="text-lg font-bold text-gray-800">{item.title}</Text>
-            <Text className="text-base font-semibold text-blue-600">{item.points_cost} pts</Text>
-            {isRedeemed ? (
-              <Text className="text-sm text-gray-500">Redeemed</Text>
-            ) : (
-              <ButtonWithIndicator
-                isLoading={redeemedLoading}
-                title="Redeem"
-                onPress={() => {
-                  Alert.alert("Redeem Reward", "Are you sure you want to redeem this reward?", [
-                    {
-                      text: "Cancel",
-                      style: "cancel",
-                    },
-                    {
-                      text: "Redeem",
-                      onPress: () => {
-                        redeemReward({ userId, rewardId: item.id, config: item.config })
+        <Link href={`/user/reward/${item.rewardId}`} asChild>
+          <Pressable className="mb-3 flex-row items-center justify-between rounded-lg bg-white p-4 shadow">
+            <View className="flex-1">
+              <Text className="text-lg font-bold text-gray-800">{item.title}</Text>
+              <Text className="text-base font-semibold text-blue-600">{item.points_cost} pts</Text>
+              {isRedeemed ? (
+                <Text className="text-sm text-gray-500">Redeemed</Text>
+              ) : (
+                <ButtonWithIndicator
+                  isLoading={redeemedLoading}
+                  title="Redeem"
+                  onPress={() => {
+                    Alert.alert("Redeem Reward", "Are you sure you want to redeem this reward?", [
+                      {
+                        text: "Cancel",
+                        style: "cancel",
                       },
-                    },
-                  ])
-                }}
-              />
-            )}
-          </View>
-        </View>
+                      {
+                        text: "Redeem",
+                        onPress: () => {
+                          redeemReward({ userId, rewardId: item.id, config: item.config })
+                        },
+                      },
+                    ])
+                  }}
+                />
+              )}
+            </View>
+          </Pressable>
+        </Link>
       )
     },
     [userRedeemedRewards, rewards],

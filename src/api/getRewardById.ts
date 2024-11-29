@@ -1,7 +1,7 @@
-import { Id } from "@/types"
+import { Reward } from "@/types"
 import { supabase } from "@/utils/supabase"
 
-export const getRewardById = async ({ rewardId }: { rewardId: Id }) => {
+export const getRewardById = async ({ rewardId }: { rewardId: string }) => {
   if (!rewardId) return null
 
   try {
@@ -12,7 +12,7 @@ export const getRewardById = async ({ rewardId }: { rewardId: Id }) => {
       .single()
     if (error) throw error
 
-    return data
+    return data as Reward
   } catch (error) {
     console.log("Error getting the reward  by id.", error)
 

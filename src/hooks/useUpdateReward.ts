@@ -1,10 +1,10 @@
 import { updateReward } from "@/api/updateReward"
-import { Reward, REWARD_TYPES } from "@/types"
+import { Reward } from "@/types"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useGetStore } from "./useGetStore"
 
 type Props = {
-  updatedReward: Reward<REWARD_TYPES>
+  updatedReward: Reward
 }
 
 export const useUpdateReward = ({ rewardId }: { rewardId: string }) => {

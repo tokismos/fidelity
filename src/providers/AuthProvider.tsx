@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [authData, setAuthData] = useState<AuthData>({
     session: null,
     isLoading: true,
-    userId: null,
+    userId: "",
     isAdmin: null,
   })
 
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         setAuthData({
           session: null,
           isLoading: false,
-          userId: null,
+          userId: "",
           isAdmin: false,
         })
       }
