@@ -10,6 +10,8 @@ export enum REWARD_STATUS {
   ACTIVE = "active",
   PAUSED = "paused",
 }
+type USER_REWARD_STATUS = "redeemed" | "canceled" | "used"
+
 type BaseRewardConfig = {
   points_needed_value: number
   image_path?: string
@@ -54,11 +56,22 @@ export interface Reward {
 
 export type RedeemedReward = {
   id: string
-  status: "redeemed" | "canceled" | "used"
+  status: USER_REWARD_STATUS
   config: RewardConfig
   reward: {
     id: string
     title: string
     description: string
+  }
+}
+
+export type UserReward = {
+  reward_id: string
+  config: RewardConfig
+  status: USER_REWARD_STATUS
+  reward: {
+    title: string
+    description: string
+    type: REWARD_TYPES
   }
 }

@@ -12,11 +12,12 @@ import {
   REWARD_TYPES,
 } from "@/types"
 import { useGetRewardById } from "@/hooks/useGetRewardById"
+import { useGetUserRewardByRewardId } from "@/hooks/useGetUserRewardByRewardId"
 
 export default function RewardDetails() {
   const { rewardId } = useLocalSearchParams<{ rewardId: string }>()
 
-  const { rewardById, isLoading, error } = useGetRewardById({ rewardId })
+  const { userReward, isLoading, error } = useGetUserRewardByRewardId({ rewardId })
 
   const renderRewardValue = (reward: Reward) => {
     switch (reward.type) {
@@ -44,9 +45,7 @@ export default function RewardDetails() {
     )
   }
 
-  console.log("rewardByIdrewardById", rewardById)
-
-  if (error || !rewardById) {
+  if (error || !userReward) {
     return (
       <View className="flex-1 items-center justify-center bg-gray-100 px-4">
         <Ionicons name="alert-circle-outline" size={48} color="#DC2626" />
@@ -61,15 +60,15 @@ export default function RewardDetails() {
       <View className=" p-4">
         <View className="rounded-lg bg-white p-4 shadow">
           <View className="mb-4 items-center">
-            {rewardById.config.image_path ? (
-              <Image source={{ uri: rewardById.config.image_path }} className="h-24 w-24" />
+            {userReward.config.image_path ? (
+              <Image source={{ uri: userReward.config.image_path }} className="h-24 w-24" />
             ) : (
               <View className="mb-2 rounded-full bg-blue-100 p-4">
                 <Ionicons
                   name={
-                    rewardById.type === "DISCOUNT_PERCENTAGE" || rewardById.type === "DISCOUNT_FIX"
+                    userReward.type === "DISCOUNT_PERCENTAGE" || userReward.type === "DISCOUNT_FIX"
                       ? "pricetag"
-                      : rewardById.type === "BUY_N_GET_1"
+                      : userReward.type === "BUY_N_GET_1"
                         ? "cart"
                         : "gift"
                   }
@@ -80,20 +79,20 @@ export default function RewardDetails() {
             )}
           </View>
 
-          <Text className="mb-2 text-center text-2xl font-bold text-gray-900">{rewardById.title}</Text>
+          <Text className="mb-2 text-center text-2xl font-bold text-gray-900">{userReward.title}</Text>
 
-          <Text className="mb-4 text-center text-lg font-medium text-blue-600">{renderRewardValue(rewardById)}</Text>
+          <Text className="mb-4 text-center text-lg font-medium text-blue-600">{renderRewardValue(userReward)}</Text>
 
           <View className="mb-4 flex-row items-center justify-center">
             <Ionicons name="star" size={20} color="#EAB308" />
             <Text className="ml-1 text-lg font-medium text-gray-700">
-              {rewardById.config.points_needed_value} points needed
+              {userReward.config.points_needed_value} points needed
             </Text>
           </View>
 
-          {rewardById.description && (
+          {userReward.description && (
             <View className="border-t border-gray-200 pt-4">
-              <Text className="text-base text-gray-600">{rewardById.description}</Text>
+              <Text className="text-base text-gray-600">{userReward.description}</Text>
             </View>
           )}
         </View>

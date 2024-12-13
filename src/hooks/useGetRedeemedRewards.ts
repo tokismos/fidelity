@@ -1,5 +1,5 @@
+import { getRedeemedRewards } from "@/api/getRedeemedRewards"
 import { useQuery } from "@tanstack/react-query"
-import { getRedeemedRewards } from "./getRedeemedRewards"
 
 export function useGetRedeemedRewards({ userId, storeId }: { userId: string; storeId: string }) {
   return useQuery({

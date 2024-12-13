@@ -13,8 +13,6 @@ export const redeemReward = async ({
   storeId: string
 }) => {
   try {
-    console.log("zzzzzzzzb", storeId)
-
     const { data, error } = await supabase.from("user_rewards").insert({
       user_id: userId,
       reward_id: rewardId,

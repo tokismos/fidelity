@@ -9,6 +9,7 @@ export default function QrScanner() {
   const router = useRouter()
   useEffect(() => {
     requestPermission()
+    router.replace(`/admin/scannedProfile/41ee8028-6361-47c2-888d-5109f7fabcd4`)
   }, [])
 
   if (!permission) {
@@ -18,7 +19,9 @@ export default function QrScanner() {
   const handleBarCodeScanned = (result: BarcodeScanningResult) => {
     if (scanned) return
     setScanned(true)
-    router.replace(`/admin/scannedProfile/${result.data}`)
+    // TOCHANGE
+    // router.replace(`/admin/scannedProfile/${result.data}`)
+    router.replace(`/admin/scannedProfile/41ee8028-6361-47c2-888d-5109f7fabcd4`)
   }
 
   return (
