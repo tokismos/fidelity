@@ -63,15 +63,24 @@ export type RedeemedReward = {
     title: string
     description: string
   }
+  type: REWARD_TYPES
 }
-
-export type UserReward = {
-  reward_id: string
-  config: RewardConfig
+export type FetchedUserReward = {
+  id: string
   status: USER_REWARD_STATUS
+  config: RewardConfig
   reward: {
     title: string
     description: string
     type: REWARD_TYPES
   }
+}
+
+export type UserReward = {
+  id: string
+  config: RewardConfig
+  status: USER_REWARD_STATUS
+  title: string
+  description: string
+  type: REWARD_TYPES
 }

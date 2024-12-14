@@ -1,21 +1,22 @@
-import { Reward, UserReward } from "@/types"
+import { FetchedUserReward, UserReward } from "@/types"
 import { supabase } from "@/utils/supabase"
 
-export const getUserRewardByRewardId = async ({ rewardId }: { rewardId: string }) => {
-  if (!rewardId) return null
+export const getUserRewardById = async ({ userRewardId }: { userRewardId: string }): Promise<UserReward | null> => {
+  if (!userRewardId) return null
 
   try {
     const { data, error } = await supabase
       .from("user_rewards")
-      .select("reward_id,config,status,reward:rewards!inner(title,description,type)")
-      .eq("reward_id", rewardId)
-      .returns<UserReward[]>()
+      .select("id,config,status,reward:rewards!inner(title,description,type)")
+      .eq("id", userRewardId)
+      .returns<FetchedUserReward[]>()
       .single()
 
     if (error) throw error
-    const { reward_id, config, status } = data
+
+    const { id, config, status } = data
     return {
-      reward_id,
+      id,
       config,
       status,
       title: data.reward?.title,

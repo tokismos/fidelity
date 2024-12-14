@@ -12,7 +12,7 @@ import {
 } from "react-native"
 import { FlashList } from "@shopify/flash-list"
 import { MaterialCommunityIcons, AntDesign, Ionicons } from "@expo/vector-icons"
-import { useLocalSearchParams } from "expo-router"
+import { Link, useLocalSearchParams } from "expo-router"
 import { useAddUserToStore } from "@/hooks/useAddUserToStore"
 import { useGetPoints } from "@/hooks/useGetPoints"
 import { useUpdatePoints } from "@/hooks/useUpdatePoints"
@@ -99,9 +99,9 @@ export default function UserProfile() {
     [],
   )
 
-  const RewardCard = useCallback(
-    ({ reward }: { reward: RedeemedReward }) => (
-      <Pressable className="mb-4 rounded-xl bg-white p-4 shadow">
+  const RewardCard = useCallback(({ reward }: { reward: RedeemedReward }) => {
+    return (
+      <Link href={`/admin/scannedProfile/reward/${reward.id}`} className="mb-4 rounded-xl bg-white p-4 shadow">
         <View className="flex-row justify-between">
           <View className="flex-1 flex-row items-center space-x-3">
             {reward.config.image_path ? (
@@ -132,10 +132,9 @@ export default function UserProfile() {
             )}
           </View>
         </View>
-      </Pressable>
-    ),
-    [],
-  )
+      </Link>
+    )
+  }, [])
 
   useEffect(() => {
     if (userPoints === undefined && !isFetching) {

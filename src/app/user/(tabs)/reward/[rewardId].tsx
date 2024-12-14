@@ -11,13 +11,12 @@ import {
   Reward,
   REWARD_TYPES,
 } from "@/types"
-import { useGetRewardById } from "@/hooks/useGetRewardById"
-import { useGetUserRewardByRewardId } from "@/hooks/useGetUserRewardByRewardId"
+import { useGetUserRewardById } from "@/hooks/useGetUserRewardById"
 
 export default function RewardDetails() {
   const { rewardId } = useLocalSearchParams<{ rewardId: string }>()
 
-  const { userReward, isLoading, error } = useGetUserRewardByRewardId({ rewardId })
+  const { userReward, isLoading, error } = useGetUserRewardById({ userRewardId: rewardId })
 
   const renderRewardValue = (reward: Reward) => {
     switch (reward.type) {

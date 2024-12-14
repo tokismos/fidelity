@@ -284,6 +284,12 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string[]
       }
+      increment_purchases_by_one: {
+        Args: {
+          reward_id: string
+        }
+        Returns: undefined
+      }
       update_points_with_history: {
         Args: {
           p_user_id: string
