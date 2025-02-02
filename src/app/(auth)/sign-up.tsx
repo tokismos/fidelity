@@ -53,5 +53,5 @@ export default function SignUp() {
         </Link>
       </View>
     </View>
-  )
+  );
 }

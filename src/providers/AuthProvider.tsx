@@ -16,39 +16,45 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [authData, setAuthData] = useState<AuthData>({
     session: null,
     isLoading: true,
-    userId: "",
+    userId: '',
     isAdmin: null,
-  })
+  });
 
   useEffect(() => {
     const handleUserSession = async (userSession: Session | null) => {
       if (userSession) {
-        const isAdmin = await isUserAdmin(userSession.user.id)
+        const isAdmin = await isUserAdmin(userSession.user.id);
         setAuthData({
           session: userSession,
           isLoading: false,
           userId: userSession.user.id,
           isAdmin,
-        })
+        });
       } else {
         setAuthData({
           session: null,
           isLoading: false,
-          userId: "",
+          userId: '',
           isAdmin: false,
-        })
+        });
       }
-    }
+    };
 
     supabase.auth.getSession().then(({ data: { session } }) => {
-      handleUserSession(session)
-    })
+      handleUserSession(session);
+    });
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_, session) => {
-      handleUserSession(session)
-    })
-    return () => authListener.subscription.unsubscribe()
-  }, [])
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_, session) => {
+        handleUserSession(session);
+      }
+    );
+    return () => authListener.subscription.unsubscribe();
+  }, []);
 
-  return <AuthContext.Provider value={{ ...authData }}>{children}</AuthContext.Provider>
-}
+  return (
+    <AuthContext.Provider value={{ ...authData }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
