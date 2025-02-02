@@ -1,20 +1,23 @@
-import { supabase } from "@/utils/supabase"
+import { supabase } from '../utils/supabase';
 
 type Props = {
-  rewardId: string
-}
+  rewardId: string;
+};
 
 export const deleteReward = async ({ rewardId }: Props) => {
   if (!rewardId) {
-    throw new Error("Reward Id is required to delete ")
+    throw new Error('Reward Id is required to delete ');
   }
   try {
-    const { error } = await supabase.from("rewards").delete().eq("id", rewardId)
+    const { error } = await supabase
+      .from('rewards')
+      .delete()
+      .eq('id', rewardId);
     if (error) {
-      throw error
+      throw error;
     }
   } catch (error) {
-    console.log("Error deleting reward :", error)
-    throw error
+    console.log('Error deleting reward :', error);
+    throw error;
   }
-}
+};

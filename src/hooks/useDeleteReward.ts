@@ -1,13 +1,15 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { deleteReward } from "@/api/deleteReward"
+import { deleteReward } from '../api/deleteReward';
 
 export const useDeleteReward = () => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: ({ rewardId }: { rewardId: string }) => deleteReward({ rewardId }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["getRewards"] }),
-  })
+    mutationFn: ({ rewardId }: { rewardId: string }) =>
+      deleteReward({ rewardId }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ['getRewards'] }),
+  });
 
-  return { deleteReward: mutation.mutate, ...mutation }
-}
+  return { deleteReward: mutation.mutate, ...mutation };
+};
