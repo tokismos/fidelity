@@ -1,18 +1,19 @@
 import { signInWithEmail } from "@/api/auth"
 import { ButtonWithIndicator } from "@/components/ButtonWithIndicator"
+import { DevLoginButtons } from "@/components/DevLoginButtons"
 import { supabase } from "@/utils/supabase"
 import { Link } from "expo-router"
 import { useState } from "react"
 import { Text, TextInput, View } from "react-native"
 
 export default function SignIn() {
-  const [email, setEmail] = useState("medber1997@gmail.com")
-  const [password, setPassword] = useState("aaaaaaaa")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleSignIn = async () => {
+  const handleSignIn = async (credentials = { email, password }) => {
     setIsLoading(true)
-    await signInWithEmail({ email, password })
+    await signInWithEmail(credentials)
     setIsLoading(false)
   }
 
@@ -45,7 +46,7 @@ export default function SignIn() {
         />
       </View>
 
-      <ButtonWithIndicator isLoading={isLoading} title="Sign In" onPress={handleSignIn} />
+      <ButtonWithIndicator isLoading={isLoading} title="Sign In" onPress={() => handleSignIn()} />
       <ButtonWithIndicator
         isLoading={isLoading}
         title="Logout"
@@ -58,6 +59,8 @@ export default function SignIn() {
         <Text className="text-gray-600">Don't have an account? </Text>
         <Link href={"/sign-up"}>Sign Up</Link>
       </View>
+
+      <DevLoginButtons isLoading={isLoading} onLogin={handleSignIn} />
     </View>
   )
 }
