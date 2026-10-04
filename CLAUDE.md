@@ -11,7 +11,8 @@ This is a **React Native loyalty points application** built with Expo and Supaba
 ### Essential Commands
 - **Start development server**: `npx expo start`
 - **Run tests**: `npm test` (no tests yet)
-- **Lint code**: `npm run lint`
+- **Lint code**: `npm run lint` (broken: the old ESLint config needs migrating)
+- **Format**: `npx prettier --write <files>`
 - **Install dependencies**: `npm install`
 
 ### Database
@@ -20,43 +21,47 @@ This is a **React Native loyalty points application** built with Expo and Supaba
 - **Regenerate DB types**: `npx supabase gen types typescript --local > src/types/database.types.ts`
 
 ### Platform-specific
+- **iOS**: `npm run ios` (Xcode 27 replaced the Simulator app with Device Hub, so if Expo can't open it, boot an iPhone and run `xcrun simctl openurl booted exp://127.0.0.1:8081`)
 - **Android**: `npm run android`
-- **iOS**: `npm run ios` 
-- **Web**: `npm run web`
+- Mobile only, there is no web build.
+
+### Local test accounts
+`admin@test.com` (owns "Test Cafe") and `user@test.com`, password `password123`. They exist only in the local database. In development the sign in screen has buttons to log in with them.
 
 ## Architecture Overview
 
 ### Authentication & Authorization
 - **Supabase Auth** with email/password authentication
-- **Role-based routing**: Admin users access `/admin/*` routes, regular users access `/user/*` routes
-- **AuthProvider** manages session state and role determination via React Context
-- **Role check**: `isUserAdmin()` API call queries `profiles.role` field after authentication
+- **Role-based routing**: `admin/_layout.tsx` and `user/_layout.tsx` redirect anyone with the wrong role
+- **AuthProvider** gives `session`, `userId`, `email`, `isAdmin` through `useAuth()`
+- Roles are set in the database only. Users cannot change their own profile.
+
+### Business rules
+- The **admin does every action**: add/remove points, add a purchase, give a reward. Customers only read.
+- Reward types (`reward_types` enum): `FREE_ITEM`, `DISCOUNT_PERCENTAGE`, `DISCOUNT_FIX` cost points. `BUY_N_GET_1` is a purchase card (`reward_progress.purchases`). `FREE_ITEM_WITH_PURCHASE` needs no points.
+- Paused rewards (`status = paused`) are hidden from customers.
 
 ### Database Schema (Supabase)
-- **`profiles`**: User profiles with role field (auto-created via trigger)
-- **`stores`**: Business entities owned by admin users
-- **`user_stores`**: Junction table tracking user-store relationships and loyalty points
-- **`rewards`**: Configurable reward definitions with JSON config validation
-- **`user_rewards`**: Redeemed rewards tracking with status management
-- **`history`**: Immutable audit trail for all point transactions
+- **`profiles`**: role and email (auto-created via trigger)
+- **`stores`**: one per admin (`owner_id`), with `image_url` in the public `images` bucket
+- **`user_stores`**: a customer's card in a store, with `points`
+- **`rewards`**: reward definitions, `config` checked by `validate_reward_config()`
+- **`reward_progress`**: purchase count per customer for `BUY_N_GET_1` rewards
+- **`user_rewards`**: log of rewards given (a config snapshot)
+- **`history`**: log of every points change
+- Row level security is on for every table. Customers read their own rows, store owners read their store's rows. Writes to points, progress and given rewards only go through database functions.
 
-### API Architecture
-- **20+ API functions** in `/src/api/` organized by feature
-- **Consistent error handling** with try/catch and Supabase error checking
-- **Type safety** using generated database types from Supabase
-- **Database functions**: `update_points_with_history()`, `increment_purchases_by_one()`, `validate_reward_config()`
+### Database functions
+- `update_points_with_history(p_user_id, p_store_id, p_transaction_amount, p_operation_type)`: add or remove points
+- `add_purchase(p_user_id, p_reward_id)`: one more purchase on a Buy N get 1 card
+- `give_reward(p_user_id, p_reward_id)`: takes the points or resets the card, then logs the reward
+- `get_store_stats(p_store_id)`: dashboard numbers
+- `is_store_owner(p_store_id)`: used by policies and functions
 
 ### Routing Structure
-- **Expo Router** with file-based routing and typed routes enabled
-- **Role-based redirection**: Index route checks auth status and redirects accordingly
-- **Admin routes**: `/admin/(tabs)/` with home, settings, rewards, addRewards tabs
-- **User routes**: `/user/(tabs)/` with home, profile tabs and dynamic store/reward pages
-- **Protected routes**: All routes require authentication, admin routes require admin role
-
-### Data Flow Patterns
-1. **Points System**: Admin adds users to stores → creates `user_stores` → points updated via database function → history recorded
-2. **Rewards System**: Admin creates rewards with JSON config → users redeem → points deducted → `user_rewards` record created
-3. **Type Safety**: Database types generated from Supabase → used in API functions → consumed by React Query hooks
+- **Admin**: tabs `home` (dashboard, customers), `rewards`, `addRewards` (new reward), `settings`. Stack: `upsert` (create/edit reward), `scanner`, `customer/[userId]`, `customer/[userId]/reward/[rewardId]`
+- **User**: tabs `home` (my stores), `profile` (QR code). Stack: `store/[storeId]`, `reward/[rewardId]`
+- Each reward type has its own screen in `src/components/rewards/`, picked by `RewardDetail`. Admin screens pass `admin` actions, customer screens are read only.
 
 ### UI/Styling
 - **NativeWind** (Tailwind CSS for React Native) configured in `tailwind.config.js`

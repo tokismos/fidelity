@@ -1,15 +1,25 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuth } from './useAuth';
-import { addStore } from '../api/addStore';
-import { Stores } from '../types';
+import { addStore } from "@/api/addStore"
+import { useAuth } from "@/hooks/useAuth"
+import { queryKeys } from "@/hooks/queryKeys"
+import { uploadImageToBucket } from "@/utils/uploadImageToBucket"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+
+type Variables = {
+  name: string
+  imageUri: string
+}
 
 export const useAddStore = () => {
-  const { userId } = useAuth();
-  const queryClient = useQueryClient();
+  const { userId } = useAuth()
+  const queryClient = useQueryClient()
+
   const mutation = useMutation({
-    mutationFn: ({ storeName }: { storeName: Stores['name'] }) =>
-      addStore({ storeName, userId }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['getStore'] }),
-  });
-  return { addStore: mutation.mutate, ...mutation };
-};
+    mutationFn: async ({ name, imageUri }: Variables) => {
+      const imageUrl = await uploadImageToBucket({ uri: imageUri, folder: "stores" })
+      return addStore({ userId, name, imageUrl })
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.store.all }),
+  })
+
+  return { addStore: mutation.mutate, ...mutation }
+}

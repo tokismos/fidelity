@@ -1,10 +1,16 @@
-import { useGetStore } from "./useGetStore"
-import { useGetRewardsByStoreId } from "./useGetRewardsByStoreId"
+import { getRewards } from "@/api/getRewards"
+import { queryKeys } from "@/hooks/queryKeys"
+import { Id } from "@/types"
+import { useQuery } from "@tanstack/react-query"
 
-export const useGetRewards = () => {
-  const { data: store, error: storeError, isLoading: storeLoading } = useGetStore()
-
-  const query = useGetRewardsByStoreId({ storeId: store?.id })
-
-  return { ...query, rewards: query.data, isLoading: query.isLoading || storeLoading, error: query.error || storeError }
+type Props = {
+  storeId: Id
+  activeOnly: boolean
 }
+
+export const useGetRewards = ({ storeId, activeOnly }: Props) =>
+  useQuery({
+    queryKey: queryKeys.rewards.byStore(storeId, activeOnly),
+    queryFn: () => getRewards({ storeId, activeOnly }),
+    enabled: !!storeId,
+  })

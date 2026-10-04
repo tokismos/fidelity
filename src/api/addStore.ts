@@ -1,25 +1,21 @@
-import { Id, Stores } from '../types';
-import { supabase } from '../utils/supabase';
+import { Id } from "@/types"
+import { supabase } from "@/utils/supabase"
 
 type Props = {
-  storeName: Stores['name'];
-  userId: Id;
-};
+  userId: Id
+  name: string
+  imageUrl: string
+}
 
-export const addStore = async ({ storeName, userId }: Props) => {
-  if (!userId) {
-    throw new Error('User ID is required to add a store');
-  }
-  try {
-    const { data, error } = await supabase
-      .from('stores')
-      .insert({ name: storeName, owner_id: userId })
-      .select();
+export const addStore = async ({ userId, name, imageUrl }: Props) => {
+  if (!userId) throw new Error("userId is required to add a store")
 
-    if (error) throw error;
-    return data;
-  } catch (error) {
-    console.log('Error adding the store:', error);
-    throw error;
-  }
-};
+  const { data, error } = await supabase
+    .from("stores")
+    .insert({ owner_id: userId, name, image_url: imageUrl })
+    .select("id")
+    .single()
+  if (error) throw error
+
+  return data
+}

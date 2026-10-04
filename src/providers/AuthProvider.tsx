@@ -1,60 +1,49 @@
+import { isUserAdmin } from "@/api/isUserAdmin"
 import { supabase } from "@/utils/supabase"
 import { Session } from "@supabase/supabase-js"
 import { PropsWithChildren, createContext, useEffect, useState } from "react"
-import { isUserAdmin } from "@/api"
 
 type AuthData = {
   session: Session | null
   isLoading: boolean
   userId: string
-  isAdmin: boolean | null
+  email: string
+  isAdmin: boolean
 }
+
+const SIGNED_OUT: AuthData = { session: null, isLoading: false, userId: "", email: "", isAdmin: false }
 
 export const AuthContext = createContext<AuthData | undefined>(undefined)
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [authData, setAuthData] = useState<AuthData>({
-    session: null,
-    isLoading: true,
-    userId: '',
-    isAdmin: null,
-  });
+  const [authData, setAuthData] = useState<AuthData>({ ...SIGNED_OUT, isLoading: true })
 
   useEffect(() => {
-    const handleUserSession = async (userSession: Session | null) => {
-      if (userSession) {
-        const isAdmin = await isUserAdmin(userSession.user.id);
-        setAuthData({
-          session: userSession,
-          isLoading: false,
-          userId: userSession.user.id,
-          isAdmin,
-        });
-      } else {
-        setAuthData({
-          session: null,
-          isLoading: false,
-          userId: '',
-          isAdmin: false,
-        });
+    const handleSession = async (session: Session | null) => {
+      if (!session) {
+        setAuthData(SIGNED_OUT)
+        return
       }
-    };
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      handleUserSession(session);
-    });
+      const isAdmin = await isUserAdmin({ userId: session.user.id }).catch(() => false)
+      setAuthData({
+        session,
+        isLoading: false,
+        userId: session.user.id,
+        email: session.user.email ?? "",
+        isAdmin,
+      })
+    }
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_, session) => {
-        handleUserSession(session);
-      }
-    );
-    return () => authListener.subscription.unsubscribe();
-  }, []);
+    supabase.auth.getSession().then(({ data: { session } }) => handleSession(session))
 
-  return (
-    <AuthContext.Provider value={{ ...authData }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+    // Supabase calls inside this callback can block auth, so run them right after it
+    const { data: authListener } = supabase.auth.onAuthStateChange((_, session) => {
+      setTimeout(() => handleSession(session), 0)
+    })
+
+    return () => authListener.subscription.unsubscribe()
+  }, [])
+
+  return <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>
+}

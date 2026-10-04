@@ -1,66 +1,76 @@
-import { signInWithEmail } from "@/api/auth"
+import { signInWithEmail } from "@/api/signInWithEmail"
 import { ButtonWithIndicator } from "@/components/ButtonWithIndicator"
 import { DevLoginButtons } from "@/components/DevLoginButtons"
-import { supabase } from "@/utils/supabase"
+import { FormField } from "@/components/RewardFormField"
 import { Link } from "expo-router"
 import { useState } from "react"
-import { Text, TextInput, View } from "react-native"
+import { Alert, KeyboardAvoidingView, Platform, Text, View } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
+
+type Credentials = {
+  email: string
+  password: string
+}
 
 export default function SignIn() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleSignIn = async (credentials = { email, password }) => {
+  const handleSignIn = async (credentials: Credentials) => {
+    if (!credentials.email || !credentials.password) {
+      Alert.alert("Missing information", "Please enter your email and password.")
+      return
+    }
+
     setIsLoading(true)
-    await signInWithEmail(credentials)
+    try {
+      await signInWithEmail(credentials)
+    } catch (error) {
+      Alert.alert("Sign in failed", error instanceof Error ? error.message : "Please try again.")
+    }
     setIsLoading(false)
   }
 
   return (
-    <View className="px-6">
-      <View className="mb-8">
-        <Text className="text-center text-3xl font-bold text-blue-600">Welcome Back!</Text>
-        <Text className="mt-2 text-center text-gray-600">Sign in to continue</Text>
-      </View>
+    <SafeAreaView className="flex-1 bg-gray-50">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        className="flex-1 justify-center px-6"
+      >
+        <View className="mb-8">
+          <Text className="text-center text-3xl font-bold text-blue-600">Welcome back</Text>
+          <Text className="mt-2 text-center text-gray-600">Sign in to see your points and rewards</Text>
+        </View>
 
-      <View className="mb-4">
-        <Text className="mb-1 text-sm font-semibold text-gray-700">Email</Text>
-        <TextInput
+        <FormField
+          label="Email"
           value={email}
           onChangeText={setEmail}
-          placeholder="Enter your email"
+          placeholder="you@example.com"
           keyboardType="email-address"
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500"
+          autoCapitalize="none"
+          autoComplete="email"
         />
-      </View>
-
-      <View className="mb-6">
-        <Text className="mb-1 text-sm font-semibold text-gray-700">Password</Text>
-        <TextInput
+        <FormField
+          label="Password"
           value={password}
           onChangeText={setPassword}
-          placeholder="Enter your password"
+          placeholder="Your password"
           secureTextEntry
-          className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500"
         />
-      </View>
 
-      <ButtonWithIndicator isLoading={isLoading} title="Sign In" onPress={() => handleSignIn()} />
-      <ButtonWithIndicator
-        isLoading={isLoading}
-        title="Logout"
-        onPress={() => {
-          supabase.auth.signOut()
-        }}
-      />
+        <ButtonWithIndicator isLoading={isLoading} title="Sign in" onPress={() => handleSignIn({ email, password })} />
 
-      <View className="mt-6 flex-row items-center justify-center">
-        <Text className="text-gray-600">Don't have an account? </Text>
-        <Link href={"/sign-up"}>Sign Up</Link>
-      </View>
+        <View className="mt-4 flex-row items-center justify-center">
+          <Text className="text-gray-600">No account yet? </Text>
+          <Link href="/sign-up" replace asChild>
+            <Text className="font-semibold text-blue-600">Sign up</Text>
+          </Link>
+        </View>
 
-      <DevLoginButtons isLoading={isLoading} onLogin={handleSignIn} />
-    </View>
+        <DevLoginButtons isLoading={isLoading} onLogin={handleSignIn} />
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   )
 }

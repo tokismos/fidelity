@@ -1,15 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
-import { useAuth } from './useAuth';
-import { getUserStores } from '../api/getUserStores';
+import { getUserStores } from "@/api/getUserStores"
+import { useAuth } from "@/hooks/useAuth"
+import { queryKeys } from "@/hooks/queryKeys"
+import { useQuery } from "@tanstack/react-query"
 
+// Stores where the signed in customer has a card
 export const useGetUserStores = () => {
-  const { userId } = useAuth();
+  const { userId } = useAuth()
 
-  const query = useQuery({
-    queryKey: ['getUserStores', userId],
+  return useQuery({
+    queryKey: queryKeys.userStores.byUser(userId),
     queryFn: () => getUserStores({ userId }),
     enabled: !!userId,
-  });
-
-  return { ...query, userStores: query.data };
-};
+  })
+}

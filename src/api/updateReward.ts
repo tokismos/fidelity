@@ -1,33 +1,16 @@
-import { Id, Reward, REWARD_TYPES } from '../types';
-import { supabase } from '../utils/supabase';
+import { Id, RewardConfig } from "@/types"
+import { supabase } from "@/utils/supabase"
 
 type Props = {
-  rewardId: Id;
-  updatedReward: Reward<REWARD_TYPES>;
-};
+  rewardId: Id
+  title: string
+  description: string
+  config: RewardConfig
+}
 
-export const updateReward = async ({ rewardId, updatedReward }: Props) => {
-  if (!rewardId) {
-    throw new Error('RewardId is required to update reward');
-  }
+export const updateReward = async ({ rewardId, title, description, config }: Props) => {
+  if (!rewardId) throw new Error("rewardId is required to update a reward")
 
-  try {
-    const { data, error } = await supabase
-      .from('rewards')
-      .update({
-        title: updatedReward.title,
-        description: updatedReward.description,
-        config: updatedReward.config,
-      })
-      .eq('id', rewardId)
-      .select()
-      .single();
-
-    if (error) throw error;
-
-    return data;
-  } catch (error) {
-    console.log('Error updating the reward', error);
-    throw error;
-  }
-};
+  const { error } = await supabase.from("rewards").update({ title, description, config }).eq("id", rewardId)
+  if (error) throw error
+}

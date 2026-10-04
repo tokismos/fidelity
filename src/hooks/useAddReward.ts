@@ -1,36 +1,35 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { addReward } from "@/api/addReward"
+import { queryKeys } from "@/hooks/queryKeys"
+import { useGetStore } from "@/hooks/useGetStore"
+import { RewardFormValues, RewardType } from "@/types"
+import { buildRewardConfig } from "@/utils/rewards"
+import { uploadImageToBucket } from "@/utils/uploadImageToBucket"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { addReward } from '../api/addReward';
-import { useGetStore } from './useGetStore';
-import { Reward } from '../types';
+type Variables = {
+  type: RewardType
+  values: RewardFormValues
+}
 
 export const useAddReward = () => {
-  const queryClient = useQueryClient();
-  const { data: store, error, isLoading } = useGetStore();
+  const { data: store } = useGetStore()
+  const queryClient = useQueryClient()
 
   const mutation = useMutation({
-    mutationFn: ({ title, description, config, type }: Reward) => {
-      if (!store) {
-        throw new Error('Error, there is no store.');
-      }
-      return addReward({ title, description, storeId: store.id, config, type });
+    mutationFn: async ({ type, values }: Variables) => {
+      const imageUrl = values.image ? await uploadImageToBucket({ uri: values.image, folder: "rewards" }) : null
+      const config = buildRewardConfig(type, values, imageUrl)
+
+      return addReward({
+        storeId: store?.id,
+        type,
+        title: values.title.trim(),
+        description: values.description.trim(),
+        config,
+      })
     },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.rewards.all }),
+  })
 
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ['getRewards'] }),
-  });
-
-  const addNewReward = ({ title, description, config, type }: Reward) => {
-    if (isLoading) {
-      console.log('Fetching the store is still loading');
-      return;
-    }
-    if (error) {
-      console.log('Error while getting the store');
-      return;
-    }
-
-    mutation.mutate({ title, description, config, type });
-  };
-  return { addReward: addNewReward, ...mutation };
-};
+  return { addReward: mutation.mutate, ...mutation }
+}

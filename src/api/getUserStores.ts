@@ -1,21 +1,20 @@
-import { Id } from '../types';
-import { supabase } from '../utils/supabase';
+import { Id, UserStoreWithStore } from "@/types"
+import { supabase } from "@/utils/supabase"
 
-export const getUserStores = async ({ userId }: { userId: Id }) => {
-  if (!userId) return null;
+type Props = {
+  userId: Id
+}
 
-  try {
-    const { data, error } = await supabase
-      .from('user_stores')
-      .select('id, points, store:stores!inner(id,name)')
-      .eq('user_id', userId);
+export const getUserStores = async ({ userId }: Props) => {
+  if (!userId) return null
 
-    if (error) throw error;
+  const { data, error } = await supabase
+    .from("user_stores")
+    .select("id, points, store:stores!inner(id, name, image_url)")
+    .eq("user_id", userId)
+    .order("created_at")
+    .returns<UserStoreWithStore[]>()
+  if (error) throw error
 
-    return data;
-  } catch (error) {
-    console.log('Error getting the stores for user');
-
-    throw error;
-  }
-};
+  return data
+}

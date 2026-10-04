@@ -1,55 +1,38 @@
-import { Redirect, Tabs } from 'expo-router';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useAuth } from '../../../hooks/useAuth';
-import { View } from 'react-native';
+import { colors } from "@/constants/colors"
+import { Ionicons } from "@expo/vector-icons"
+import { Tabs } from "expo-router"
 
-export default function TabLayout() {
-  const { session, isLoading } = useAuth();
-
-  if (isLoading) return <View className='flex-1 bg-red-600' />;
-
-  if (!session) {
-    return <Redirect href='/' />;
-  }
-
+export default function AdminTabsLayout() {
   return (
-    <Tabs screenOptions={{ headerShown: false }}>
+    <Tabs screenOptions={{ tabBarActiveTintColor: colors.primary }}>
       <Tabs.Screen
-        name='home'
+        name="home"
         options={{
-          title: 'This is Home',
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name='home' color={color} />
-          ),
+          title: "Home",
+          tabBarIcon: ({ color, size }) => <Ionicons name="storefront-outline" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
-        name='settings'
+        name="rewards"
         options={{
-          title: 'This is Settings',
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name='home' color={color} />
-          ),
+          title: "Rewards",
+          tabBarIcon: ({ color, size }) => <Ionicons name="gift-outline" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
-        name='rewards'
+        name="addRewards"
         options={{
-          title: 'rewards',
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name='home' color={color} />
-          ),
+          title: "New reward",
+          tabBarIcon: ({ color, size }) => <Ionicons name="add-circle-outline" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
-        name='addRewards'
+        name="settings"
         options={{
-          title: 'addRewards',
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name='home' color={color} />
-          ),
+          title: "Settings",
+          tabBarIcon: ({ color, size }) => <Ionicons name="settings-outline" size={size} color={color} />,
         }}
       />
     </Tabs>
-  );
+  )
 }

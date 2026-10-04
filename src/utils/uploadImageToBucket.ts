@@ -1,22 +1,20 @@
-import { supabase } from "./supabase"
+import { supabase } from "@/utils/supabase"
 import { decode } from "base64-arraybuffer"
-import * as FileSystem from "expo-file-system/legacy"
 import * as Crypto from "expo-crypto"
+import * as FileSystem from "expo-file-system/legacy"
 
-export const uploadImageToBucket = async (imgUri: string) => {
-  if (!imgUri) return
-  const base64 = await FileSystem.readAsStringAsync(imgUri, { encoding: "base64" })
-  const UUID = Crypto.randomUUID()
+type Props = {
+  uri: string
+  folder: "stores" | "rewards"
+}
 
-  const { data, error } = await supabase.storage
-    .from("images")
-    .upload(`products/${UUID}-${Date.now()}.jpg`, decode(base64), {
-      contentType: "image/jpeg",
-    })
+// Uploads a local photo to the public images bucket and returns its public URL
+export const uploadImageToBucket = async ({ uri, folder }: Props) => {
+  const base64 = await FileSystem.readAsStringAsync(uri, { encoding: "base64" })
+  const path = `${folder}/${Crypto.randomUUID()}.jpg`
 
-  if (error) {
-    throw new Error(`Error uploading the image ${error}`)
-  }
+  const { error } = await supabase.storage.from("images").upload(path, decode(base64), { contentType: "image/jpeg" })
+  if (error) throw error
 
-  return data.path
+  return supabase.storage.from("images").getPublicUrl(path).data.publicUrl
 }

@@ -1,20 +1,20 @@
-import { AuthProvider } from '@/providers/AuthProvider';
-import QueryProvider from '@/providers/QueryProvider';
-import { Stack } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import '../../global.css';
-export default function Layout() {
+import "../../global.css"
+import { AuthProvider } from "@/providers/AuthProvider"
+import QueryProvider from "@/providers/QueryProvider"
+import { Stack } from "expo-router"
+import { StatusBar } from "expo-status-bar"
+
+export default function RootLayout() {
   return (
     <AuthProvider>
       <QueryProvider>
-        <SafeAreaView className='flex-1'>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name='(auth)' />
-            <Stack.Screen name='admin' />
-            <Stack.Screen name='user/(tabs)' />
-            <Stack.Screen name='index' />
-          </Stack>
-        </SafeAreaView>
+        <StatusBar style="dark" />
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="admin" />
+          <Stack.Screen name="user" />
+        </Stack>
       </QueryProvider>
     </AuthProvider>
   )

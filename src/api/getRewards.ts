@@ -1,38 +1,23 @@
-import { Reward, RewardConfig } from '../types';
-import { getImageUrl } from '../utils/getImageUrl';
-import { supabase } from '../utils/supabase';
+import { Id, Reward } from "@/types"
+import { supabase } from "@/utils/supabase"
 
-export const getRewards = async ({
-  storeId,
-}: {
-  storeId: string;
-}): Promise<Reward[] | null> => {
-  if (!storeId) return null;
+type Props = {
+  storeId: Id
+  activeOnly: boolean
+}
 
-  try {
-    const { data, error } = await supabase
-      .from('rewards')
-      .select('id,title,description,type,config,store_id')
-      .eq('store_id', storeId);
+export const getRewards = async ({ storeId, activeOnly }: Props) => {
+  if (!storeId) return null
 
-    if (error) throw error;
-    return data.map((item) => {
-      const reward = item as Reward;
+  let query = supabase
+    .from("rewards")
+    .select("id, created_at, title, description, type, config, status, store_id, cost_points")
+    .eq("store_id", storeId)
 
-      const config = reward.config as RewardConfig;
-      if (config.image_path) {
-        return {
-          ...reward,
-          config: {
-            ...config,
-            image_path: getImageUrl(config.image_path),
-          },
-        };
-      }
-      return reward;
-    });
-  } catch (error) {
-    console.log('Error getting the rewards for store.', error);
-    throw error;
-  }
-};
+  if (activeOnly) query = query.eq("status", "active")
+
+  const { data, error } = await query.order("created_at").order("title").returns<Reward[]>()
+  if (error) throw error
+
+  return data
+}
