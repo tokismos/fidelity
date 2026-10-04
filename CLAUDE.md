@@ -136,7 +136,7 @@ export const getStore = async ({ userId }: Props) => {
 - Style with NativeWind `className` only. No `StyleSheet`. Inline `style` only for props that need it (`contentContainerStyle`).
 - Raw colors (icon `color`, `ActivityIndicator`) come from `colors` in `@/constants/colors`. No hex codes in screens or components. If the file does not exist yet, create it with: `primary` `#2563EB`, `danger` `#DC2626`, `success` `#16A34A`, `warning` `#EAB308`, `text` `#4B5563`, `muted` `#9CA3AF`.
 - Icons from `@expo/vector-icons`, Ionicons first.
-- Lists: `FlashList` with `estimatedItemSize`, `keyExtractor={(item) => item.id}`, `ListEmptyComponent`.
+- Lists: `FlashList` (v2, no `estimatedItemSize`) with `keyExtractor={(item) => item.id}`, `ListEmptyComponent`.
 - Forms: `useState` (one `formData` object for bigger forms). Confirm risky actions with `Alert.alert` (Cancel + action). Submit with `ButtonWithIndicator`.
 
 ### Database (`supabase/migrations/`)
