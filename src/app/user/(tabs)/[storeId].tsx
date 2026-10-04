@@ -90,7 +90,6 @@ export default function StoreRewards() {
         extraData={userRedeemedRewards}
         ListEmptyComponent={<Text>No rewards available.</Text>}
         renderItem={renderItem}
-        estimatedItemSize={70}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
       />

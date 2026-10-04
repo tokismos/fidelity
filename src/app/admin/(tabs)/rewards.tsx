@@ -189,7 +189,6 @@ export default function Rewards() {
         <FlashList
           data={rewards}
           renderItem={renderItem}
-          estimatedItemSize={100}
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 20 }}

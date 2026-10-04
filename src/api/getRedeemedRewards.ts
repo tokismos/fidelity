@@ -11,7 +11,7 @@ export const getRedeemedRewards = async ({ userId, storeId }: Props) => {
     .select('id,status,config,reward:rewards(id,title,description)')
     .eq('user_id', userId)
     .eq('store_id', storeId)
-    .returns<RedeemedReward[] | null>();
+    .returns<RedeemedReward[]>();
 
   if (error) throw error;
   return data;

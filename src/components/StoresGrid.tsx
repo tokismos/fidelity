@@ -53,7 +53,6 @@ const StoresGrid = ({
       renderItem={renderItem}
       keyExtractor={(item) => item.id!}
       numColumns={2}
-      estimatedItemSize={100}
       onRefresh={onRefetch}
       refreshing={isRefetching}
     />

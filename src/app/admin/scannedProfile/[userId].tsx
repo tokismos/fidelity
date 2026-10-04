@@ -396,7 +396,6 @@ export default function UserProfile() {
 
             <FlashList
               data={userHistory ?? []}
-              estimatedItemSize={72}
               renderItem={({ item, index }) => (
                 <TransactionItem
                   item={item}
@@ -447,7 +446,6 @@ export default function UserProfile() {
 
             <FlashList
               data={redeemedRewards ?? []}
-              estimatedItemSize={100}
               renderItem={({ item }) => <RewardCard reward={item} />}
               keyExtractor={(item) => item.id}
               ListEmptyComponent={
