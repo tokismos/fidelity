@@ -10,6 +10,7 @@ type Props = {
   email: string
   points: number
   isUpdatingPoints: boolean
+  multiplier: number
   onChangePoints: (amount: number, operationType: OperationType) => void
   section: CustomerSection
   onSectionChange: (section: CustomerSection) => void
@@ -19,6 +20,7 @@ export const CustomerHeader = ({
   email,
   points,
   isUpdatingPoints,
+  multiplier,
   onChangePoints,
   section,
   onSectionChange,
@@ -29,7 +31,7 @@ export const CustomerHeader = ({
     </Text>
     <PointsBalance points={points} label="Points" />
     <View className="mt-3">
-      <PointsEditor isPending={isUpdatingPoints} onSubmit={onChangePoints} />
+      <PointsEditor isPending={isUpdatingPoints} multiplier={multiplier} onSubmit={onChangePoints} />
     </View>
     <View className="mt-4">
       <SegmentedControl

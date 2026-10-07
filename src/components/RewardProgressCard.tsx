@@ -25,9 +25,14 @@ export const RewardProgressCard = ({ item: { reward, progress }, href, readyLabe
             <Text className="text-xs font-semibold text-green-700">{readyLabel}</Text>
           </View>
         )}
+        {progress.isFinished && (
+          <View className="rounded-full bg-gray-100 px-3 py-1">
+            <Text className="text-xs font-semibold text-gray-600">Received</Text>
+          </View>
+        )}
       </View>
       <View className="mt-3">
-        {progress.unit && (
+        {progress.unit && !progress.isFinished && (
           <ProgressBar current={progress.current} target={progress.target} isReady={progress.isReady} />
         )}
         <Text className="mt-1 text-xs text-gray-500">{progressLabel(progress)}</Text>

@@ -10,7 +10,7 @@ export const getReward = async ({ rewardId }: Props) => {
 
   const { data, error } = await supabase
     .from("rewards")
-    .select("id, created_at, title, description, type, config, status, store_id, cost_points")
+    .select("id, created_at, title, description, type, config, status, store_id, cost_points, is_one_time")
     .eq("id", rewardId)
     .returns<Reward[]>()
     .single()

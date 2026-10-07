@@ -6,6 +6,8 @@ import { Pressable, Text, TextInput, View } from "react-native"
 
 type Props = {
   isPending: boolean
+  // Points multiplier of the running promotion, 1 when there is none
+  multiplier: number
   onSubmit: (amount: number, operationType: OperationType) => void
 }
 
@@ -13,12 +15,18 @@ const QUICK_AMOUNTS = [5, 10, 25, 50]
 
 type Mode = "add" | "subtract"
 
-export const PointsEditor = ({ isPending, onSubmit }: Props) => {
+export const PointsEditor = ({ isPending, multiplier, onSubmit }: Props) => {
   const [mode, setMode] = useState<Mode>("add")
   const [amount, setAmount] = useState("")
 
   const value = Number(amount)
   const isValid = Number.isInteger(value) && value > 0
+
+  const isBoosted = mode === "add" && multiplier > 1
+  const buttonTitle =
+    mode === "add"
+      ? `Add ${isValid ? `${isBoosted ? value * multiplier : value} ` : ""}points`
+      : `Remove ${isValid ? `${value} ` : ""}points`
 
   const submit = () => {
     onSubmit(value, mode)
@@ -48,6 +56,12 @@ export const PointsEditor = ({ isPending, onSubmit }: Props) => {
           </Pressable>
         ))}
       </View>
+      {isBoosted && (
+        <Text className="mb-3 rounded-lg bg-amber-50 p-2 text-center text-sm text-amber-800">
+          x{multiplier} promotion running:{" "}
+          {isValid ? `${value} points = ${value * multiplier}` : "added points are multiplied"}
+        </Text>
+      )}
       <TextInput
         value={amount}
         onChangeText={setAmount}
@@ -56,7 +70,7 @@ export const PointsEditor = ({ isPending, onSubmit }: Props) => {
         className="mb-3 rounded-lg border border-gray-300 px-4 py-3 text-base"
       />
       <ButtonWithIndicator
-        title={`${mode === "add" ? "Add" : "Remove"} ${isValid ? `${value} ` : ""}points`}
+        title={buttonTitle}
         variant={mode === "add" ? "success" : "danger"}
         isLoading={isPending}
         disabled={!isValid}

@@ -6,10 +6,11 @@ import { StorePageHeader, StorePageSection } from "@/components/StorePageHeader"
 import { TimelineItem } from "@/components/TimelineItem"
 import { useAuth } from "@/hooks/useAuth"
 import { useCustomerRewards } from "@/hooks/useCustomerRewards"
-import { useGetGivenRewards } from "@/hooks/useGetGivenRewards"
-import { useGetHistory } from "@/hooks/useGetHistory"
+import { useCustomerTimeline } from "@/hooks/useCustomerTimeline"
+import { useGetPromotions } from "@/hooks/useGetPromotions"
 import { useGetUserStores } from "@/hooks/useGetUserStores"
-import { buildTimeline } from "@/utils/timeline"
+import { useNow } from "@/hooks/useNow"
+import { activePromotion, nextPromotion } from "@/utils/promotions"
 import { FlashList } from "@shopify/flash-list"
 import { Stack, useLocalSearchParams } from "expo-router"
 import { useState } from "react"
@@ -21,21 +22,31 @@ export default function UserStore() {
 
   const { data: userStores } = useGetUserStores()
   const customer = useCustomerRewards({ userId, storeId })
-  const history = useGetHistory({ userId, storeId })
-  const givenRewards = useGetGivenRewards({ userId, storeId })
+  const activity = useCustomerTimeline({ userId, storeId })
+  const now = useNow()
+  const promotions = useGetPromotions({ storeIds: [storeId] })
 
   const store = userStores?.find((userStore) => userStore.store.id === storeId)?.store
 
   if (customer.isLoading) return <LoadingView />
   if (customer.error) return <ErrorView message={customer.error.message} />
 
-  const refresh = () => Promise.all([customer.refetch(), history.refetch(), givenRewards.refetch()])
-  const isRefreshing = customer.isRefetching || history.isRefetching || givenRewards.isRefetching
+  const refresh = () => Promise.all([customer.refetch(), activity.refetch(), promotions.refetch()])
+  const isRefreshing = customer.isRefetching || activity.isRefetching
 
   const header = (
     <>
       <Stack.Screen options={{ title: store?.name ?? "Store" }} />
-      <StorePageHeader store={store} points={customer.points} section={section} onSectionChange={setSection} />
+      <StorePageHeader
+        store={store}
+        points={customer.points}
+        promotion={
+          activePromotion(promotions.data ?? [], storeId, now) ?? nextPromotion(promotions.data ?? [], storeId, now)
+        }
+        now={now}
+        section={section}
+        onSectionChange={setSection}
+      />
     </>
   )
 
@@ -44,7 +55,7 @@ export default function UserStore() {
       <FlashList
         className="bg-gray-50"
         contentContainerStyle={{ padding: 16 }}
-        data={buildTimeline(history.data ?? [], givenRewards.data ?? [])}
+        data={activity.timeline}
         keyExtractor={(item) => `${item.kind}-${item.id}`}
         renderItem={({ item }) => <TimelineItem entry={item} />}
         ListHeaderComponent={header}

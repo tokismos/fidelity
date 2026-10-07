@@ -59,6 +59,8 @@ export type RewardProgress = {
   target: number
   unit: "points" | "purchases" | null
   isReady: boolean
+  // A one time reward this customer already received
+  isFinished: boolean
 }
 
 // What the reward form edits, all values as typed text
@@ -72,9 +74,10 @@ export type RewardFormValues = {
   points_needed_value: string
   item_name: string
   free_item_name: string
+  is_one_time: boolean
 }
 
-export type RewardFormField = Exclude<keyof RewardFormValues, "title" | "description" | "image">
+export type RewardFormField = Exclude<keyof RewardFormValues, "title" | "description" | "image" | "is_one_time">
 
 export type RewardWithProgress = {
   reward: Reward
@@ -85,5 +88,6 @@ export type RewardWithProgress = {
 export type RewardAdminActions = {
   onGive: () => void
   onAddPurchase: () => void
+  onRemovePurchase: () => void
   isPending: boolean
 }

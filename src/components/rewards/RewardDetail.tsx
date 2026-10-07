@@ -23,6 +23,6 @@ export const RewardDetail = ({ reward, progress, admin }: Props) => {
     case "FREE_ITEM":
       return <FreeItemDetail reward={reward} progress={progress} admin={admin} />
     case "FREE_ITEM_WITH_PURCHASE":
-      return <FreeItemWithPurchaseDetail reward={reward} admin={admin} />
+      return <FreeItemWithPurchaseDetail reward={reward} progress={progress} admin={admin} />
   }
 }

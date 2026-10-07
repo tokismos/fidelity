@@ -13,6 +13,7 @@ export default function AdminLayout() {
     <Stack screenOptions={{ headerBackTitle: "Back" }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="upsert" options={{ title: "Reward" }} />
+      <Stack.Screen name="promotions" options={{ title: "Double points" }} />
       <Stack.Screen name="scanner" options={{ title: "Scan a customer" }} />
       <Stack.Screen name="customer/[userId]/index" options={{ title: "Customer" }} />
       <Stack.Screen name="customer/[userId]/reward/[rewardId]" options={{ title: "Reward" }} />

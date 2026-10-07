@@ -10,7 +10,7 @@ export const getStore = async ({ userId }: Props) => {
 
   const { data, error } = await supabase
     .from("stores")
-    .select("id, name, image_url")
+    .select("id, name, image_url, timezone")
     .eq("owner_id", userId)
     .maybeSingle()
   if (error) throw error

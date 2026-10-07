@@ -26,6 +26,7 @@ export const useAddReward = () => {
         title: values.title.trim(),
         description: values.description.trim(),
         config,
+        isOneTime: values.is_one_time,
       })
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.rewards.all }),

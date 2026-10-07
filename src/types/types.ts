@@ -11,6 +11,10 @@ export type Store = Tables<"stores">
 
 export type HistoryEntry = Tables<"history">
 
+export type Promotion = Tables<"promotions">
+
+export type PromotionStatus = "upcoming" | "active" | "ended"
+
 export type StoreCustomer = {
   id: string
   points: number
@@ -22,7 +26,7 @@ export type StoreCustomer = {
 export type UserStoreWithStore = {
   id: string
   points: number
-  store: Pick<Store, "id" | "name" | "image_url">
+  store: Pick<Store, "id" | "name" | "image_url" | "timezone">
 }
 
 export type GivenReward = {
@@ -33,10 +37,19 @@ export type GivenReward = {
   reward: { title: string; type: RewardType } | null
 }
 
-// One line in a customer's history: points moves and rewards received
+export type PurchaseLogEntry = {
+  id: string
+  created_at: string
+  reward_id: string
+  change: number
+  reward: { title: string } | null
+}
+
+// One line in a customer's history: points moves, purchases and rewards received
 export type TimelineEntry =
-  | { kind: "points"; id: string; date: string; operation: OperationType; amount: number }
-  | { kind: "reward"; id: string; date: string; title: string; pointsCost: number | null }
+  | { kind: "points"; id: string; date: string; operation: OperationType; amount: number; multiplier: number }
+  | { kind: "purchase"; id: string; date: string; rewardId: string; title: string; change: number }
+  | { kind: "reward"; id: string; date: string; rewardId: string; title: string; pointsCost: number | null }
 
 export type StoreStats = {
   customers: number

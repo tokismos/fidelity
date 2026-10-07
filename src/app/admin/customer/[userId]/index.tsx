@@ -7,12 +7,13 @@ import { RewardProgressCard } from "@/components/RewardProgressCard"
 import { TimelineItem } from "@/components/TimelineItem"
 import { useAddCustomer } from "@/hooks/useAddCustomer"
 import { useCustomerRewards } from "@/hooks/useCustomerRewards"
-import { useGetGivenRewards } from "@/hooks/useGetGivenRewards"
-import { useGetHistory } from "@/hooks/useGetHistory"
+import { useCustomerTimeline } from "@/hooks/useCustomerTimeline"
+import { useGetPromotions } from "@/hooks/useGetPromotions"
 import { useGetStore } from "@/hooks/useGetStore"
+import { useNow } from "@/hooks/useNow"
 import { useUpdatePoints } from "@/hooks/useUpdatePoints"
 import { OperationType } from "@/types"
-import { buildTimeline } from "@/utils/timeline"
+import { activePromotion } from "@/utils/promotions"
 import { FlashList } from "@shopify/flash-list"
 import { useLocalSearchParams } from "expo-router"
 import { useState } from "react"
@@ -25,8 +26,9 @@ export default function Customer() {
   const store = useGetStore()
   const storeId = store.data?.id
   const customer = useCustomerRewards({ userId, storeId })
-  const history = useGetHistory({ userId, storeId })
-  const givenRewards = useGetGivenRewards({ userId, storeId })
+  const activity = useCustomerTimeline({ userId, storeId })
+  const now = useNow()
+  const promotions = useGetPromotions({ storeIds: storeId ? [storeId] : [] })
   const { updatePoints, isPending: isUpdatingPoints } = useUpdatePoints()
   const { addCustomer, isPending: isAdding } = useAddCustomer()
 
@@ -64,14 +66,15 @@ export default function Customer() {
     ])
   }
 
-  const refresh = () => Promise.all([customer.refetch(), history.refetch(), givenRewards.refetch()])
-  const isRefreshing = customer.isRefetching || history.isRefetching || givenRewards.isRefetching
+  const refresh = () => Promise.all([customer.refetch(), activity.refetch()])
+  const isRefreshing = customer.isRefetching || activity.isRefetching
 
   const header = (
     <CustomerHeader
       email={customer.membership.profile?.email ?? "Customer"}
       points={customer.points}
       isUpdatingPoints={isUpdatingPoints}
+      multiplier={storeId ? (activePromotion(promotions.data ?? [], storeId, now)?.multiplier ?? 1) : 1}
       onChangePoints={changePoints}
       section={section}
       onSectionChange={setSection}
@@ -83,7 +86,7 @@ export default function Customer() {
       <FlashList
         className="bg-gray-50"
         contentContainerStyle={{ padding: 16 }}
-        data={buildTimeline(history.data ?? [], givenRewards.data ?? [])}
+        data={activity.timeline}
         keyExtractor={(item) => `${item.kind}-${item.id}`}
         renderItem={({ item }) => <TimelineItem entry={item} />}
         ListHeaderComponent={header}

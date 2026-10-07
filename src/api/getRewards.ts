@@ -11,7 +11,7 @@ export const getRewards = async ({ storeId, activeOnly }: Props) => {
 
   let query = supabase
     .from("rewards")
-    .select("id, created_at, title, description, type, config, status, store_id, cost_points")
+    .select("id, created_at, title, description, type, config, status, store_id, cost_points, is_one_time")
     .eq("store_id", storeId)
 
   if (activeOnly) query = query.eq("status", "active")

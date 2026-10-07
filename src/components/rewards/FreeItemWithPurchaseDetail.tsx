@@ -1,15 +1,17 @@
 import { ButtonWithIndicator } from "@/components/ButtonWithIndicator"
+import { RewardStatusMessage } from "@/components/rewards/RewardStatusMessage"
 import { colors } from "@/constants/colors"
-import { FreeItemWithPurchaseReward, RewardAdminActions } from "@/types"
+import { FreeItemWithPurchaseReward, RewardAdminActions, RewardProgress } from "@/types"
 import { Ionicons } from "@expo/vector-icons"
 import { Text, View } from "react-native"
 
 type Props = {
   reward: FreeItemWithPurchaseReward
+  progress: RewardProgress
   admin?: RewardAdminActions
 }
 
-export const FreeItemWithPurchaseDetail = ({ reward, admin }: Props) => {
+export const FreeItemWithPurchaseDetail = ({ reward, progress, admin }: Props) => {
   const { item_name, free_item_name } = reward.config
 
   return (
@@ -26,16 +28,20 @@ export const FreeItemWithPurchaseDetail = ({ reward, admin }: Props) => {
         </View>
       </View>
 
-      <View className="mt-4 flex-row items-center rounded-xl bg-blue-50 p-3">
-        <Ionicons name="information-circle" size={22} color={colors.primary} />
-        <Text className="ml-2 flex-1 text-blue-900">
-          {admin
-            ? `Give it only when the customer buys a ${item_name}.`
-            : `No points needed. Show your QR code when you buy a ${item_name}.`}
-        </Text>
-      </View>
+      {progress.isFinished ? (
+        <RewardStatusMessage progress={progress} isAdmin={!!admin} />
+      ) : (
+        <View className="mt-4 flex-row items-center rounded-xl bg-blue-50 p-3">
+          <Ionicons name="information-circle" size={22} color={colors.primary} />
+          <Text className="ml-2 flex-1 text-blue-900">
+            {admin
+              ? `Give it only when the customer buys a ${item_name}.`
+              : `No points needed. Show your QR code when you buy a ${item_name}.`}
+          </Text>
+        </View>
+      )}
 
-      {admin && (
+      {admin && !progress.isFinished && (
         <View className="mt-4">
           <ButtonWithIndicator
             title={`Give free ${free_item_name}`}

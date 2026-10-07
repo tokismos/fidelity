@@ -17,24 +17,44 @@ export const describeReward = (reward: Reward) => {
   }
 }
 
-export const getRewardProgress = (reward: Reward, points: number, purchases: number): RewardProgress => {
+export const getRewardProgress = (
+  reward: Reward,
+  points: number,
+  purchases: number,
+  alreadyReceived: boolean,
+): RewardProgress => {
+  const isFinished = reward.is_one_time && alreadyReceived
+
   switch (reward.type) {
     case "BUY_N_GET_1": {
       const target = reward.config.required_purchases
-      return { current: Math.min(purchases, target), target, unit: "purchases", isReady: purchases >= target }
+      return {
+        current: Math.min(purchases, target),
+        target,
+        unit: "purchases",
+        isReady: !isFinished && purchases >= target,
+        isFinished,
+      }
     }
     case "DISCOUNT_PERCENTAGE":
     case "DISCOUNT_FIX":
     case "FREE_ITEM": {
       const target = reward.config.points_needed_value
-      return { current: Math.min(points, target), target, unit: "points", isReady: points >= target }
+      return {
+        current: Math.min(points, target),
+        target,
+        unit: "points",
+        isReady: !isFinished && points >= target,
+        isFinished,
+      }
     }
     case "FREE_ITEM_WITH_PURCHASE":
-      return { current: 0, target: 0, unit: null, isReady: true }
+      return { current: 0, target: 0, unit: null, isReady: !isFinished, isFinished }
   }
 }
 
-export const progressLabel = ({ current, target, unit }: RewardProgress) => {
+export const progressLabel = ({ current, target, unit, isFinished }: RewardProgress) => {
+  if (isFinished) return "Already received"
   if (unit === "points") return `${current} / ${target} points`
   if (unit === "purchases") return `${current} / ${target} purchases`
   return "No points needed"
@@ -50,10 +70,16 @@ export const EMPTY_REWARD_FORM: RewardFormValues = {
   points_needed_value: "",
   item_name: "",
   free_item_name: "",
+  is_one_time: false,
 }
 
 export const rewardToFormValues = (reward: Reward): RewardFormValues => {
-  const values = { ...EMPTY_REWARD_FORM, title: reward.title, description: reward.description }
+  const values = {
+    ...EMPTY_REWARD_FORM,
+    title: reward.title,
+    description: reward.description,
+    is_one_time: reward.is_one_time,
+  }
   const image = reward.config.image_path ?? null
 
   switch (reward.type) {

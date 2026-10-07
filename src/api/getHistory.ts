@@ -11,7 +11,7 @@ export const getHistory = async ({ userId, storeId }: Props) => {
 
   const { data, error } = await supabase
     .from("history")
-    .select("id, created_at, operation_type, transaction_amount, previous_points, new_points")
+    .select("id, created_at, operation_type, transaction_amount, previous_points, new_points, multiplier")
     .eq("user_id", userId)
     .eq("store_id", storeId)
     .order("created_at", { ascending: false })

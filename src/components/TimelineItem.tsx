@@ -24,6 +24,27 @@ export const TimelineItem = ({ entry }: Props) => {
     )
   }
 
+  if (entry.kind === "purchase") {
+    const isAdded = entry.change > 0
+
+    return (
+      <View className="mb-2 flex-row items-center rounded-xl bg-white p-4 shadow-sm">
+        <View
+          className={`h-10 w-10 items-center justify-center rounded-full ${isAdded ? "bg-blue-100" : "bg-gray-100"}`}
+        >
+          <Ionicons name={isAdded ? "cart" : "arrow-undo"} size={20} color={isAdded ? colors.primary : colors.text} />
+        </View>
+        <View className="ml-3 flex-1">
+          <Text className="font-medium text-gray-900">{isAdded ? "Purchase added" : "Purchase removed"}</Text>
+          <Text className="text-xs text-gray-500">
+            {entry.title} · {formatDate(entry.date)}
+          </Text>
+        </View>
+        <Text className={`font-semibold ${isAdded ? "text-blue-600" : "text-gray-500"}`}>{isAdded ? "+1" : "-1"}</Text>
+      </View>
+    )
+  }
+
   const isAdd = entry.operation === "add"
 
   return (
@@ -32,7 +53,10 @@ export const TimelineItem = ({ entry }: Props) => {
         <Ionicons name={isAdd ? "add" : "remove"} size={22} color={isAdd ? colors.success : colors.danger} />
       </View>
       <View className="ml-3 flex-1">
-        <Text className="font-medium text-gray-900">{isAdd ? "Points added" : "Points removed"}</Text>
+        <Text className="font-medium text-gray-900">
+          {isAdd ? "Points added" : "Points removed"}
+          {entry.multiplier > 1 ? ` (x${entry.multiplier} promotion)` : ""}
+        </Text>
         <Text className="text-xs text-gray-500">{formatDate(entry.date)}</Text>
       </View>
       <Text className={`font-semibold ${isAdd ? "text-green-600" : "text-red-600"}`}>

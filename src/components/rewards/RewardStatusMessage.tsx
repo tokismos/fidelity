@@ -10,6 +10,17 @@ type Props = {
 
 // "Ready" or "X more points/purchases" under a reward
 export const RewardStatusMessage = ({ progress, isAdmin }: Props) => {
+  if (progress.isFinished) {
+    return (
+      <View className="mt-4 flex-row items-center rounded-xl bg-gray-100 p-3">
+        <Ionicons name="checkmark-done" size={22} color={colors.text} />
+        <Text className="ml-2 flex-1 text-gray-700">
+          {isAdmin ? "Already given. This was a one time offer." : "Already received. This was a one time offer."}
+        </Text>
+      </View>
+    )
+  }
+
   if (progress.isReady) {
     return (
       <View className="mt-4 flex-row items-center rounded-xl bg-green-50 p-3">

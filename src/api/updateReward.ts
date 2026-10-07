@@ -6,11 +6,15 @@ type Props = {
   title: string
   description: string
   config: RewardConfig
+  isOneTime: boolean
 }
 
-export const updateReward = async ({ rewardId, title, description, config }: Props) => {
+export const updateReward = async ({ rewardId, title, description, config, isOneTime }: Props) => {
   if (!rewardId) throw new Error("rewardId is required to update a reward")
 
-  const { error } = await supabase.from("rewards").update({ title, description, config }).eq("id", rewardId)
+  const { error } = await supabase
+    .from("rewards")
+    .update({ title, description, config, is_one_time: isOneTime })
+    .eq("id", rewardId)
   if (error) throw error
 }

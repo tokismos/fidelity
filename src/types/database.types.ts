@@ -24,6 +24,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          multiplier: number
           new_points: number
           operation_type: Database["public"]["Enums"]["operation_type"]
           previous_points: number
@@ -34,6 +35,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          multiplier?: number
           new_points: number
           operation_type: Database["public"]["Enums"]["operation_type"]
           previous_points: number
@@ -44,6 +46,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          multiplier?: number
           new_points?: number
           operation_type?: Database["public"]["Enums"]["operation_type"]
           previous_points?: number
@@ -88,6 +91,90 @@ export type Database = {
           role?: Database["public"]["Enums"]["role"]
         }
         Relationships: []
+      }
+      promotions: {
+        Row: {
+          created_at: string
+          ends_at: string
+          id: string
+          multiplier: number
+          starts_at: string
+          store_id: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          id?: string
+          multiplier: number
+          starts_at: string
+          store_id: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          multiplier?: number
+          starts_at?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promotions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_log: {
+        Row: {
+          change: number
+          created_at: string
+          id: string
+          reward_id: string
+          store_id: string
+          user_id: string
+        }
+        Insert: {
+          change: number
+          created_at?: string
+          id?: string
+          reward_id: string
+          store_id: string
+          user_id: string
+        }
+        Update: {
+          change?: number
+          created_at?: string
+          id?: string
+          reward_id?: string
+          store_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_log_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "rewards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_log_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_log_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reward_progress: {
         Row: {
@@ -148,6 +235,7 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          is_one_time: boolean
           status: Database["public"]["Enums"]["reward_status"]
           store_id: string
           title: string
@@ -159,6 +247,7 @@ export type Database = {
           created_at?: string
           description: string
           id?: string
+          is_one_time?: boolean
           status: Database["public"]["Enums"]["reward_status"]
           store_id: string
           title: string
@@ -170,6 +259,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          is_one_time?: boolean
           status?: Database["public"]["Enums"]["reward_status"]
           store_id?: string
           title?: string
@@ -192,6 +282,7 @@ export type Database = {
           image_url: string
           name: string
           owner_id: string
+          timezone: string | null
         }
         Insert: {
           created_at?: string
@@ -199,6 +290,7 @@ export type Database = {
           image_url?: string
           name: string
           owner_id: string
+          timezone?: string | null
         }
         Update: {
           created_at?: string
@@ -206,6 +298,7 @@ export type Database = {
           image_url?: string
           name?: string
           owner_id?: string
+          timezone?: string | null
         }
         Relationships: [
           {
@@ -314,6 +407,7 @@ export type Database = {
     }
     Functions: {
       add_purchase: { Args: { p_reward_id: string; p_user_id: string }; Returns: number }
+      end_promotion: { Args: { p_promotion_id: string }; Returns: undefined }
       get_cost_points_required_types: { Args: Record<PropertyKey, never>; Returns: string[] }
       get_store_stats: {
         Args: { p_store_id: string }
@@ -324,7 +418,9 @@ export type Database = {
         }[]
       }
       give_reward: { Args: { p_reward_id: string; p_user_id: string }; Returns: string }
+      is_one_time_reward_used: { Args: { p_reward_id: string; p_user_id: string }; Returns: boolean }
       is_store_owner: { Args: { p_store_id: string }; Returns: boolean }
+      remove_purchase: { Args: { p_reward_id: string; p_user_id: string }; Returns: number }
       update_points_with_history: {
         Args: {
           p_operation_type: Database["public"]["Enums"]["operation_type"]

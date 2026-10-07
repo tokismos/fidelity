@@ -3,6 +3,7 @@ import { ErrorView } from "@/components/ErrorView"
 import { LoadingView } from "@/components/LoadingView"
 import { PhotoPicker } from "@/components/PhotoPicker"
 import { RewardConfigFields } from "@/components/RewardConfigFields"
+import { RewardAvailabilityField } from "@/components/RewardAvailabilityField"
 import { FormField } from "@/components/RewardFormField"
 import { REWARD_TYPE_INFO } from "@/constants/rewardTypes"
 import { useAddReward } from "@/hooks/useAddReward"
@@ -77,6 +78,10 @@ export default function UpsertReward() {
             multiline
           />
           <RewardConfigFields type={type} values={values} onChange={setField} />
+          <RewardAvailabilityField
+            isOneTime={values.is_one_time}
+            onChange={(isOneTime) => setValues((previous) => ({ ...previous, is_one_time: isOneTime }))}
+          />
           <PhotoPicker
             label="Photo (optional)"
             image={values.image}

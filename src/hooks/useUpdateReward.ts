@@ -28,6 +28,7 @@ export const useUpdateReward = () => {
         title: values.title.trim(),
         description: values.description.trim(),
         config: buildRewardConfig(type, values, imageUrl),
+        isOneTime: values.is_one_time,
       })
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.rewards.all }),

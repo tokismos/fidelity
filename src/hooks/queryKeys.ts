@@ -28,6 +28,14 @@ export const queryKeys = {
     all: ["givenRewards"],
     byUserStore: (userId: Id, storeId: Id) => ["givenRewards", { userId, storeId }],
   },
+  purchaseLog: {
+    all: ["purchaseLog"],
+    byUserStore: (userId: Id, storeId: Id) => ["purchaseLog", { userId, storeId }],
+  },
+  promotions: {
+    all: ["promotions"],
+    byStores: (storeIds: string[]) => ["promotions", { storeIds }],
+  },
   history: {
     all: ["history"],
     byUserStore: (userId: Id, storeId: Id) => ["history", { userId, storeId }],

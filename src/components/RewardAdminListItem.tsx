@@ -22,7 +22,10 @@ export const RewardAdminListItem = ({ reward, isBusy, onToggleActive, onEdit, on
         <RewardIcon reward={reward} size="small" />
         <View className="ml-3 flex-1">
           <Text className="text-base font-semibold text-gray-900">{reward.title}</Text>
-          <Text className="text-sm text-gray-500">{describeReward(reward)}</Text>
+          <Text className="text-sm text-gray-500">
+            {describeReward(reward)}
+            {reward.is_one_time ? " · One time" : ""}
+          </Text>
         </View>
       </View>
       <View className="mt-3 flex-row items-center justify-between border-t border-gray-100 pt-3">

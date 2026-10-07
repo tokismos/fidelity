@@ -48,7 +48,7 @@ export const BuyNGet1Detail = ({ reward, progress, admin }: Props) => {
 
       <RewardStatusMessage progress={progress} isAdmin={!!admin} />
 
-      {admin && (
+      {admin && !progress.isFinished && (
         <View className="mt-4">
           {progress.isReady ? (
             <ButtonWithIndicator
@@ -59,6 +59,14 @@ export const BuyNGet1Detail = ({ reward, progress, admin }: Props) => {
             />
           ) : (
             <ButtonWithIndicator title="Add purchase" isLoading={admin.isPending} onPress={admin.onAddPurchase} />
+          )}
+          {progress.current > 0 && (
+            <ButtonWithIndicator
+              title="Remove last purchase"
+              variant="secondary"
+              isLoading={admin.isPending}
+              onPress={admin.onRemovePurchase}
+            />
           )}
         </View>
       )}

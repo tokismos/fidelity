@@ -7,7 +7,11 @@ export const useAddPurchase = () => {
 
   const mutation = useMutation({
     mutationFn: addPurchase,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.progress.all }),
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: queryKeys.progress.all }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.purchaseLog.all }),
+      ]),
   })
 
   return { addPurchase: mutation.mutate, ...mutation }

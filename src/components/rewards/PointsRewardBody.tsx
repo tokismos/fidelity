@@ -17,7 +17,7 @@ export const PointsRewardBody = ({ progress, admin, giveLabel }: Props) => (
     <ProgressBar current={progress.current} target={progress.target} isReady={progress.isReady} />
     <Text className="mt-1 text-center text-sm text-gray-500">{progressLabel(progress)}</Text>
     <RewardStatusMessage progress={progress} isAdmin={!!admin} />
-    {admin && (
+    {admin && !progress.isFinished && (
       <View className="mt-4">
         <ButtonWithIndicator
           title={giveLabel}

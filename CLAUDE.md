@@ -40,6 +40,9 @@ This is a **React Native loyalty points application** built with Expo and Supaba
 - The **admin does every action**: add/remove points, add a purchase, give a reward. Customers only read.
 - Reward types (`reward_types` enum): `FREE_ITEM`, `DISCOUNT_PERCENTAGE`, `DISCOUNT_FIX` cost points. `BUY_N_GET_1` is a purchase card (`reward_progress.purchases`). `FREE_ITEM_WITH_PURCHASE` needs no points.
 - Paused rewards (`status = paused`) are hidden from customers.
+- `rewards.is_one_time`: a one time reward can be given only once per customer (checked in `give_reward` and `add_purchase`). Otherwise it is reusable.
+- `purchase_log` records every purchase added or removed on a Buy N get 1 card (`add_purchase`, `remove_purchase`).
+- `promotions`: double or triple points for a time window (no overlap per store). `update_points_with_history` multiplies added points during a promotion and saves the `multiplier` on the history line. `end_promotion` cancels an upcoming one or ends a running one. Times are saved in UTC and shown in the store time zone (`stores.timezone`, saved once from the admin's phone).
 
 ### Database Schema (Supabase)
 - **`profiles`**: role and email (auto-created via trigger)
@@ -53,7 +56,7 @@ This is a **React Native loyalty points application** built with Expo and Supaba
 
 ### Database functions
 - `update_points_with_history(p_user_id, p_store_id, p_transaction_amount, p_operation_type)`: add or remove points
-- `add_purchase(p_user_id, p_reward_id)`: one more purchase on a Buy N get 1 card
+- `add_purchase(p_user_id, p_reward_id)` / `remove_purchase(...)`: one more or one less purchase on a Buy N get 1 card
 - `give_reward(p_user_id, p_reward_id)`: takes the points or resets the card, then logs the reward
 - `get_store_stats(p_store_id)`: dashboard numbers
 - `is_store_owner(p_store_id)`: used by policies and functions
