@@ -62,8 +62,9 @@ This is a **React Native loyalty points application** built with Expo and Supaba
 - `is_store_owner(p_store_id)`: used by policies and functions
 
 ### Routing Structure
-- **Admin**: tabs `home` (dashboard, customers), `rewards`, `addRewards` (new reward), `settings`. Stack: `upsert` (create/edit reward), `scanner`, `customer/[userId]`, `customer/[userId]/reward/[rewardId]`
-- **User**: tabs `home` (my stores), `profile` (QR code). Stack: `store/[storeId]`, `reward/[rewardId]`
+- **Admin**: tabs `home` (dashboard, customers), `rewards`, `scan` (a raised center button that opens the scanner, see `ScanTabButton`), `promotions`, `settings`. Stack: `newReward` (pick a type), `upsert` (create/edit reward), `scanner` (full screen modal), `customer/[userId]`, `customer/[userId]/reward/[rewardId]`
+- **User**: tabs `home` (my stores, each card shows the closest reward through `useStoreOverviews`), `profile` (QR code). Stack: `store/[storeId]`, `reward/[rewardId]`
+- The admin customer screen keeps the last change in a `LastAction` and offers to undo it (`UndoBanner`). Removed points are only put back when no promotion is running, because adding points during one multiplies them.
 - Each reward type has its own screen in `src/components/rewards/`, picked by `RewardDetail`. Admin screens pass `admin` actions, customer screens are read only.
 
 ### UI/Styling
@@ -142,7 +143,8 @@ export const getStore = async ({ userId }: Props) => {
 
 ### UI
 - Style with NativeWind `className` only. No `StyleSheet`. Inline `style` only for props that need it (`contentContainerStyle`).
-- Raw colors (icon `color`, `ActivityIndicator`) come from `colors` in `@/constants/colors`. No hex codes in screens or components. If the file does not exist yet, create it with: `primary` `#2563EB`, `danger` `#DC2626`, `success` `#16A34A`, `warning` `#EAB308`, `text` `#4B5563`, `muted` `#9CA3AF`.
+- Raw colors (icon `color`, `ActivityIndicator`) come from `colors` in `@/constants/colors`. No hex codes in screens or components. The brand color is the teal `primary` scale defined in `tailwind.config.js` (`bg-primary-600`, `text-primary-700`, `bg-primary-50`); never use `blue-*` classes.
+- Cards: `rounded-2xl border border-gray-200 bg-white`, no shadows. A ready reward gets `border-2 border-green-600`. Group titles use `SectionTitle`.
 - Icons from `@expo/vector-icons`, Ionicons first.
 - Lists: `FlashList` (v2, no `estimatedItemSize`) with `keyExtractor={(item) => item.id}`, `ListEmptyComponent`.
 - Forms: `useState` (one `formData` object for bigger forms). Confirm risky actions with `Alert.alert` (Cancel + action). Submit with `ButtonWithIndicator`.

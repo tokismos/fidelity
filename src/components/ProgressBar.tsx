@@ -12,7 +12,7 @@ export const ProgressBar = ({ current, target, isReady }: Props) => {
   return (
     <View className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
       <View
-        className={`h-full rounded-full ${isReady ? "bg-green-500" : "bg-blue-500"}`}
+        className={`h-full rounded-full ${isReady ? "bg-green-500" : "bg-primary-500"}`}
         style={{ width: `${percent}%` }}
       />
     </View>

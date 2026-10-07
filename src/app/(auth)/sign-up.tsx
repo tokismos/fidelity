@@ -39,7 +39,7 @@ export default function SignUp() {
         className="flex-1 justify-center px-6"
       >
         <View className="mb-8">
-          <Text className="text-center text-3xl font-bold text-blue-600">Create an account</Text>
+          <Text className="text-center text-3xl font-bold text-primary-600">Create an account</Text>
           <Text className="mt-2 text-center text-gray-600">Collect points in your favorite stores</Text>
         </View>
 
@@ -65,7 +65,7 @@ export default function SignUp() {
         <View className="mt-4 flex-row items-center justify-center">
           <Text className="text-gray-600">Already have an account? </Text>
           <Link href="/sign-in" replace asChild>
-            <Text className="font-semibold text-blue-600">Sign in</Text>
+            <Text className="font-semibold text-primary-600">Sign in</Text>
           </Link>
         </View>
       </KeyboardAvoidingView>

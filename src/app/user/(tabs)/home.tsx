@@ -3,15 +3,15 @@ import { ErrorView } from "@/components/ErrorView"
 import { LoadingView } from "@/components/LoadingView"
 import { StoreCard } from "@/components/StoreCard"
 import { useGetPromotions } from "@/hooks/useGetPromotions"
-import { useGetUserStores } from "@/hooks/useGetUserStores"
 import { useNow } from "@/hooks/useNow"
+import { useStoreOverviews } from "@/hooks/useStoreOverviews"
 import { activePromotion } from "@/utils/promotions"
 import { FlashList } from "@shopify/flash-list"
 
 export default function UserHome() {
-  const { data: userStores, isLoading, error, refetch, isRefetching } = useGetUserStores()
+  const { storeIds, overviews, isLoading, error, refetch, isRefetching } = useStoreOverviews()
   const now = useNow()
-  const promotions = useGetPromotions({ storeIds: (userStores ?? []).map((userStore) => userStore.store.id) })
+  const promotions = useGetPromotions({ storeIds })
 
   if (isLoading) return <LoadingView />
   if (error) return <ErrorView message={error.message} />
@@ -20,12 +20,12 @@ export default function UserHome() {
     <FlashList
       className="bg-gray-50"
       contentContainerStyle={{ padding: 16 }}
-      data={userStores ?? []}
-      keyExtractor={(item) => item.id}
+      data={overviews}
+      keyExtractor={(item) => item.userStore.id}
       renderItem={({ item }) => (
         <StoreCard
-          userStore={item}
-          multiplier={activePromotion(promotions.data ?? [], item.store.id, now)?.multiplier}
+          overview={item}
+          multiplier={activePromotion(promotions.data ?? [], item.userStore.store.id, now)?.multiplier}
         />
       )}
       ListEmptyComponent={

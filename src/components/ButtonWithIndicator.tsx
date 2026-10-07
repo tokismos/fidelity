@@ -12,7 +12,7 @@ type Props = {
 }
 
 const BUTTON_CLASS: Record<Variant, string> = {
-  primary: "bg-blue-600",
+  primary: "bg-primary-600",
   success: "bg-green-600",
   danger: "bg-red-600",
   secondary: "border border-gray-300 bg-white",

@@ -31,9 +31,9 @@ export const FreeItemWithPurchaseDetail = ({ reward, progress, admin }: Props) =
       {progress.isFinished ? (
         <RewardStatusMessage progress={progress} isAdmin={!!admin} />
       ) : (
-        <View className="mt-4 flex-row items-center rounded-xl bg-blue-50 p-3">
+        <View className="mt-4 flex-row items-center rounded-xl bg-primary-50 p-3">
           <Ionicons name="information-circle" size={22} color={colors.primary} />
-          <Text className="ml-2 flex-1 text-blue-900">
+          <Text className="ml-2 flex-1 text-primary-900">
             {admin
               ? `Give it only when the customer buys a ${item_name}.`
               : `No points needed. Show your QR code when you buy a ${item_name}.`}

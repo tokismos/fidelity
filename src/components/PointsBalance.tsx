@@ -8,11 +8,11 @@ type Props = {
 }
 
 export const PointsBalance = ({ points, label }: Props) => (
-  <View className="flex-row items-center rounded-xl bg-blue-600 p-4">
+  <View className="flex-row items-center rounded-xl bg-primary-600 p-4">
     <Ionicons name="star" size={28} color={colors.warning} />
     <View className="ml-3">
       <Text className="text-3xl font-bold text-white">{points}</Text>
-      <Text className="text-sm text-blue-100">{label}</Text>
+      <Text className="text-sm text-primary-100">{label}</Text>
     </View>
   </View>
 )

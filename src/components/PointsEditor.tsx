@@ -23,10 +23,9 @@ export const PointsEditor = ({ isPending, multiplier, onSubmit }: Props) => {
   const isValid = Number.isInteger(value) && value > 0
 
   const isBoosted = mode === "add" && multiplier > 1
+  const total = isBoosted ? value * multiplier : value
   const buttonTitle =
-    mode === "add"
-      ? `Add ${isValid ? `${isBoosted ? value * multiplier : value} ` : ""}points`
-      : `Remove ${isValid ? `${value} ` : ""}points`
+    mode === "add" ? `Add ${isValid ? `${total} ` : ""}points` : `Remove ${isValid ? `${value} ` : ""}points`
 
   const submit = () => {
     onSubmit(value, mode)
@@ -34,41 +33,46 @@ export const PointsEditor = ({ isPending, multiplier, onSubmit }: Props) => {
   }
 
   return (
-    <View className="rounded-xl bg-white p-4 shadow-sm">
+    <View className="rounded-2xl border border-gray-200 bg-white p-3">
       <SegmentedControl
         options={[
           { value: "add", label: "Add points" },
-          { value: "subtract", label: "Remove points" },
+          { value: "subtract", label: "Remove" },
         ]}
         value={mode}
         onChange={setMode}
       />
-      <View className="my-3 flex-row">
-        {QUICK_AMOUNTS.map((quick) => (
-          <Pressable
-            key={quick}
-            onPress={() => setAmount(String(quick))}
-            className={`mr-2 flex-1 rounded-lg py-2 ${amount === String(quick) ? "bg-blue-600" : "bg-gray-100"}`}
-          >
-            <Text className={`text-center font-semibold ${amount === String(quick) ? "text-white" : "text-gray-700"}`}>
-              {quick}
-            </Text>
-          </Pressable>
-        ))}
+      <View className="my-3 flex-row items-center">
+        {QUICK_AMOUNTS.map((quick) => {
+          const isSelected = amount === String(quick)
+          return (
+            <Pressable
+              key={quick}
+              onPress={() => setAmount(String(quick))}
+              className={`mr-2 h-11 flex-1 items-center justify-center rounded-xl ${
+                isSelected ? "border-2 border-primary-600 bg-primary-50" : "border border-gray-200 bg-white"
+              }`}
+            >
+              <Text className={`font-bold ${isSelected ? "text-primary-700" : "text-gray-900"}`}>{quick}</Text>
+            </Pressable>
+          )
+        })}
+        <TextInput
+          value={amount}
+          onChangeText={setAmount}
+          keyboardType="number-pad"
+          placeholder="Other"
+          accessibilityLabel="Amount of points"
+          className="h-11 flex-[1.4] rounded-xl border border-gray-300 px-2 text-center text-base font-bold"
+        />
       </View>
       {isBoosted && (
-        <Text className="mb-3 rounded-lg bg-amber-50 p-2 text-center text-sm text-amber-800">
-          x{multiplier} promotion running:{" "}
-          {isValid ? `${value} points = ${value * multiplier}` : "added points are multiplied"}
+        <Text className="mb-3 rounded-lg bg-amber-50 p-2 text-center text-sm font-semibold text-amber-800">
+          {isValid
+            ? `${value} x ${multiplier} promotion = ${total} points will be added`
+            : `x${multiplier} promotion running: added points are multiplied`}
         </Text>
       )}
-      <TextInput
-        value={amount}
-        onChangeText={setAmount}
-        keyboardType="number-pad"
-        placeholder="Or type an amount"
-        className="mb-3 rounded-lg border border-gray-300 px-4 py-3 text-base"
-      />
       <ButtonWithIndicator
         title={buttonTitle}
         variant={mode === "add" ? "success" : "danger"}

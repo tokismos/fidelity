@@ -6,14 +6,16 @@ import { RewardDetailHeader } from "@/components/RewardDetailHeader"
 import { RewardHistoryTitle } from "@/components/RewardHistoryTitle"
 import { TimelineItem } from "@/components/TimelineItem"
 import { RewardDetail } from "@/components/rewards/RewardDetail"
+import { colors } from "@/constants/colors"
 import { useAuth } from "@/hooks/useAuth"
 import { useCustomerRewards } from "@/hooks/useCustomerRewards"
 import { useCustomerTimeline } from "@/hooks/useCustomerTimeline"
 import { useGetReward } from "@/hooks/useGetReward"
 import { rewardTimeline } from "@/utils/timeline"
+import { Ionicons } from "@expo/vector-icons"
 import { FlashList } from "@shopify/flash-list"
-import { useLocalSearchParams } from "expo-router"
-import { View } from "react-native"
+import { Link, useLocalSearchParams } from "expo-router"
+import { Pressable, Text, View } from "react-native"
 
 export default function UserReward() {
   const { rewardId } = useLocalSearchParams<{ rewardId: string }>()
@@ -39,6 +41,16 @@ export default function UserReward() {
       <View className="mt-6">
         <RewardDetail reward={reward.data} progress={item.progress} />
       </View>
+      {!item.progress.isFinished && (
+        <Link href="/user/profile" asChild>
+          <Pressable className="mt-4 flex-row items-center justify-center rounded-2xl bg-gray-900 py-4">
+            <Ionicons name="qr-code-outline" size={22} color={colors.white} />
+            <Text className="ml-2 text-base font-bold text-white">
+              {item.progress.isReady ? "Show my code to get it" : "Show my code"}
+            </Text>
+          </Pressable>
+        </Link>
+      )}
       <RewardHistoryTitle />
     </View>
   )

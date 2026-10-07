@@ -2,6 +2,7 @@ import { EmptyState } from "@/components/EmptyState"
 import { ErrorView } from "@/components/ErrorView"
 import { LoadingView } from "@/components/LoadingView"
 import { RewardProgressCard } from "@/components/RewardProgressCard"
+import { SectionTitle } from "@/components/SectionTitle"
 import { StorePageHeader, StorePageSection } from "@/components/StorePageHeader"
 import { TimelineItem } from "@/components/TimelineItem"
 import { useAuth } from "@/hooks/useAuth"
@@ -11,6 +12,8 @@ import { useGetPromotions } from "@/hooks/useGetPromotions"
 import { useGetUserStores } from "@/hooks/useGetUserStores"
 import { useNow } from "@/hooks/useNow"
 import { activePromotion, nextPromotion } from "@/utils/promotions"
+import { rewardRows } from "@/utils/rewards"
+import { timelineRows } from "@/utils/timeline"
 import { FlashList } from "@shopify/flash-list"
 import { Stack, useLocalSearchParams } from "expo-router"
 import { useState } from "react"
@@ -55,9 +58,11 @@ export default function UserStore() {
       <FlashList
         className="bg-gray-50"
         contentContainerStyle={{ padding: 16 }}
-        data={activity.timeline}
-        keyExtractor={(item) => `${item.kind}-${item.id}`}
-        renderItem={({ item }) => <TimelineItem entry={item} />}
+        data={timelineRows(activity.timeline)}
+        keyExtractor={(row) => row.id}
+        renderItem={({ item: row }) =>
+          row.kind === "day" ? <SectionTitle title={row.title} /> : <TimelineItem entry={row.entry} />
+        }
         ListHeaderComponent={header}
         ListEmptyComponent={<EmptyState icon="time-outline" title="No activity yet" />}
         onRefresh={refresh}
@@ -70,15 +75,19 @@ export default function UserStore() {
     <FlashList
       className="bg-gray-50"
       contentContainerStyle={{ padding: 16 }}
-      data={customer.items}
-      keyExtractor={(item) => item.reward.id}
-      renderItem={({ item }) => (
-        <RewardProgressCard
-          item={item}
-          readyLabel="Ready!"
-          href={{ pathname: "/user/reward/[rewardId]", params: { rewardId: item.reward.id } }}
-        />
-      )}
+      data={rewardRows(customer.items)}
+      keyExtractor={(row) => row.id}
+      renderItem={({ item: row }) =>
+        row.kind === "title" ? (
+          <SectionTitle title={row.title} tone={row.id === "title-ready" ? "success" : "default"} />
+        ) : (
+          <RewardProgressCard
+            item={row.item}
+            readyLabel="Ready"
+            href={{ pathname: "/user/reward/[rewardId]", params: { rewardId: row.item.reward.id } }}
+          />
+        )
+      }
       ListHeaderComponent={header}
       ListEmptyComponent={<EmptyState icon="gift-outline" title="No rewards yet" />}
       onRefresh={refresh}

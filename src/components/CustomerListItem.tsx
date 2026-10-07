@@ -1,7 +1,6 @@
-import { colors } from "@/constants/colors"
 import { StoreCustomer } from "@/types"
 import { formatDate } from "@/utils/rewards"
-import { Ionicons } from "@expo/vector-icons"
+import { initials } from "@/utils/text"
 import { Href, Link } from "expo-router"
 import { Pressable, Text, View } from "react-native"
 
@@ -12,17 +11,17 @@ type Props = {
 
 export const CustomerListItem = ({ customer, href }: Props) => (
   <Link href={href} asChild>
-    <Pressable className="mb-2 flex-row items-center rounded-xl bg-white p-4 shadow-sm">
-      <View className="h-10 w-10 items-center justify-center rounded-full bg-blue-50">
-        <Ionicons name="person" size={20} color={colors.primary} />
+    <Pressable className="mb-2 flex-row items-center rounded-2xl border border-gray-200 bg-white p-3">
+      <View className="h-10 w-10 items-center justify-center rounded-full bg-primary-100">
+        <Text className="text-sm font-extrabold text-primary-700">{initials(customer.profile?.email)}</Text>
       </View>
       <View className="ml-3 flex-1">
-        <Text className="font-medium text-gray-900" numberOfLines={1}>
+        <Text className="font-semibold text-gray-900" numberOfLines={1}>
           {customer.profile?.email ?? "Customer"}
         </Text>
-        <Text className="text-xs text-gray-500">Since {formatDate(customer.created_at)}</Text>
+        <Text className="text-xs text-gray-500">Since {formatDate(customer.created_at).split(",")[0]}</Text>
       </View>
-      <Text className="font-bold text-blue-600">{customer.points} pts</Text>
+      <Text className="font-extrabold text-primary-700">{customer.points} pts</Text>
     </Pressable>
   </Link>
 )
