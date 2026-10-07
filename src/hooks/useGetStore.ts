@@ -1,13 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
-import { useAuth } from './useAuth';
-import { getStore } from '../api/getStore';
+import { getStore } from "@/api/getStore"
+import { useAuth } from "@/hooks/useAuth"
+import { queryKeys } from "@/hooks/queryKeys"
+import { useQuery } from "@tanstack/react-query"
 
+// The store owned by the signed in admin
 export const useGetStore = () => {
-  const { userId } = useAuth();
+  const { userId } = useAuth()
 
   return useQuery({
-    queryKey: ['getStore', userId],
+    queryKey: queryKeys.store.byOwner(userId),
     queryFn: () => getStore({ userId }),
     enabled: !!userId,
-  });
-};
+  })
+}

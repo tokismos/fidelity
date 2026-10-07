@@ -1,35 +1,38 @@
-import { updateReward } from '../api/updateReward';
-import { Reward } from '../types';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useGetStore } from './useGetStore';
+import { updateReward } from "@/api/updateReward"
+import { queryKeys } from "@/hooks/queryKeys"
+import { Id, RewardFormValues, RewardType } from "@/types"
+import { buildRewardConfig } from "@/utils/rewards"
+import { uploadImageToBucket } from "@/utils/uploadImageToBucket"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-type Props = {
-  updatedReward: Reward;
-};
+type Variables = {
+  rewardId: Id
+  type: RewardType
+  values: RewardFormValues
+}
 
-export const useUpdateReward = ({ rewardId }: { rewardId: string }) => {
-  const queryClient = useQueryClient();
-  const { data: store } = useGetStore();
+const isUploaded = (image: string) => image.startsWith("http")
+
+export const useUpdateReward = () => {
+  const queryClient = useQueryClient()
 
   const mutation = useMutation({
-    mutationFn: async ({ updatedReward }: Props) => {
-      if (!rewardId) {
-        throw new Error('rewardId is required');
+    mutationFn: async ({ rewardId, type, values }: Variables) => {
+      let imageUrl = values.image
+      if (imageUrl && !isUploaded(imageUrl)) {
+        imageUrl = await uploadImageToBucket({ uri: imageUrl, folder: "rewards" })
       }
 
-      return updateReward({ rewardId, updatedReward });
+      return updateReward({
+        rewardId,
+        title: values.title.trim(),
+        description: values.description.trim(),
+        config: buildRewardConfig(type, values, imageUrl),
+        isOneTime: values.is_one_time,
+      })
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['getRewards', store?.id] });
-    },
-  });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.rewards.all }),
+  })
 
-  const updateRewardMutation = ({ updatedReward }: Props) => {
-    mutation.mutate({ updatedReward });
-  };
-
-  return {
-    updateReward: updateRewardMutation,
-    ...mutation,
-  };
-};
+  return { updateReward: mutation.mutate, ...mutation }
+}

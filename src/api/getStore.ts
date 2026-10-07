@@ -1,22 +1,19 @@
-import { Id } from '../types';
-import { supabase } from '../utils/supabase';
+import { Id } from "@/types"
+import { supabase } from "@/utils/supabase"
 
-export const getStore = async ({ userId }: { userId: Id }) => {
-  if (!userId) return null;
+type Props = {
+  userId: Id
+}
 
-  try {
-    const { data, error } = await supabase
-      .from('stores')
-      .select('id, name, image_url')
-      .eq('owner_id', userId)
-      .maybeSingle();
+export const getStore = async ({ userId }: Props) => {
+  if (!userId) return null
 
-    if (error) throw error;
+  const { data, error } = await supabase
+    .from("stores")
+    .select("id, name, image_url, timezone")
+    .eq("owner_id", userId)
+    .maybeSingle()
+  if (error) throw error
 
-    return data;
-  } catch (error) {
-    console.log('Error getting the store', error);
-
-    throw error;
-  }
-};
+  return data
+}

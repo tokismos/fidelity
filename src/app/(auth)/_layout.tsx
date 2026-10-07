@@ -1,20 +1,12 @@
-import { useAuth } from '@/hooks/useAuth';
-import { Redirect, Stack } from 'expo-router';
-import { View } from 'react-native';
+import { LoadingView } from "@/components/LoadingView"
+import { useAuth } from "@/hooks/useAuth"
+import { Redirect, Stack } from "expo-router"
 
 export default function AuthLayout() {
-  const { session, isAdmin, isLoading } = useAuth();
+  const { session, isAdmin, isLoading } = useAuth()
 
-  if (isLoading) return <View className='flex-1 bg-red-600' />;
+  if (isLoading) return <LoadingView />
+  if (session) return <Redirect href={isAdmin ? "/admin/home" : "/user/home"} />
 
-  if (session) {
-    return <Redirect href={isAdmin ? '/admin/home' : '/user/home'} />;
-  }
-
-  return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name='sign-in' />
-      <Stack.Screen name='sign-up' />
-    </Stack>
-  );
+  return <Stack screenOptions={{ headerShown: false }} />
 }

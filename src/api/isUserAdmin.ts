@@ -1,17 +1,15 @@
-import { Id, Role } from "@/types"
+import { Id } from "@/types"
 import { supabase } from "@/utils/supabase"
 
-export const isUserAdmin = async (userId: Id) => {
-  if (!userId) return null
+type Props = {
+  userId: Id
+}
 
-  try {
-    const { data, error } = await supabase.from("profiles").select("role").eq("id", userId).single()
+export const isUserAdmin = async ({ userId }: Props) => {
+  if (!userId) return false
 
-    if (error) throw error
+  const { data, error } = await supabase.from("profiles").select("role").eq("id", userId).single()
+  if (error) throw error
 
-    return data?.role === Role.ADMIN
-  } catch (error) {
-    console.log("Error fetching user role:", error)
-    return null
-  }
+  return data.role === "admin"
 }

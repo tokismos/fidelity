@@ -1,26 +1,24 @@
-import { Redirect, Tabs } from 'expo-router';
-import { useAuth } from '../../../hooks/useAuth';
-import { View } from 'react-native';
+import { colors } from "@/constants/colors"
+import { Ionicons } from "@expo/vector-icons"
+import { Tabs } from "expo-router"
 
-export default function UserLayout() {
-  const { session, isLoading } = useAuth();
-
-  if (isLoading) return <View className='flex-1 bg-red-600' />;
-
-  if (!session) {
-    return <Redirect href='/' />;
-  }
-
+export default function UserTabsLayout() {
   return (
-    <Tabs screenOptions={{ headerShown: false }} initialRouteName='profile'>
-      <Tabs.Screen name='home' />
-      <Tabs.Screen name='profile' />
+    <Tabs screenOptions={{ tabBarActiveTintColor: colors.primary }}>
       <Tabs.Screen
-        name='[storeId]'
+        name="home"
         options={{
-          href: null,
+          title: "My stores",
+          tabBarIcon: ({ color, size }) => <Ionicons name="storefront-outline" size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "My QR code",
+          tabBarIcon: ({ color, size }) => <Ionicons name="qr-code-outline" size={size} color={color} />,
         }}
       />
     </Tabs>
-  );
+  )
 }

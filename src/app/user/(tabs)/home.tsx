@@ -1,27 +1,42 @@
-import StoresGrid from '../../../components/StoresGrid';
-import { useGetUserStores } from '../../../hooks/useGetUserStores';
+import { EmptyState } from "@/components/EmptyState"
+import { ErrorView } from "@/components/ErrorView"
+import { LoadingView } from "@/components/LoadingView"
+import { StoreCard } from "@/components/StoreCard"
+import { useGetPromotions } from "@/hooks/useGetPromotions"
+import { useGetUserStores } from "@/hooks/useGetUserStores"
+import { useNow } from "@/hooks/useNow"
+import { activePromotion } from "@/utils/promotions"
+import { FlashList } from "@shopify/flash-list"
 
-import { View, Text } from 'react-native';
+export default function UserHome() {
+  const { data: userStores, isLoading, error, refetch, isRefetching } = useGetUserStores()
+  const now = useNow()
+  const promotions = useGetPromotions({ storeIds: (userStores ?? []).map((userStore) => userStore.store.id) })
 
-export default function User() {
-  const { userStores, isLoading, error, refetch, isRefetching } =
-    useGetUserStores();
-
-  if (isLoading) {
-    return <Text className='text-center text-lg'>Loading...</Text>;
-  }
-
-  if (error) {
-    return <Text>{error.message}</Text>;
-  }
+  if (isLoading) return <LoadingView />
+  if (error) return <ErrorView message={error.message} />
 
   return (
-    <View className='flex-1 '>
-      <StoresGrid
-        userStores={userStores ?? null}
-        isRefetching={isRefetching}
-        onRefetch={refetch}
-      />
-    </View>
-  );
+    <FlashList
+      className="bg-gray-50"
+      contentContainerStyle={{ padding: 16 }}
+      data={userStores ?? []}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <StoreCard
+          userStore={item}
+          multiplier={activePromotion(promotions.data ?? [], item.store.id, now)?.multiplier}
+        />
+      )}
+      ListEmptyComponent={
+        <EmptyState
+          icon="storefront-outline"
+          title="No stores yet"
+          message="Show your QR code at a store to join its loyalty program."
+        />
+      }
+      onRefresh={() => Promise.all([refetch(), promotions.refetch()])}
+      refreshing={isRefetching || promotions.isRefetching}
+    />
+  )
 }
