@@ -13,6 +13,7 @@ import { useGetReward } from "@/hooks/useGetReward"
 import { useGetStore } from "@/hooks/useGetStore"
 import { useGiveReward } from "@/hooks/useGiveReward"
 import { useRemovePurchase } from "@/hooks/useRemovePurchase"
+import { giveRewardMessage } from "@/utils/rewards"
 import { rewardTimeline } from "@/utils/timeline"
 import { FlashList } from "@shopify/flash-list"
 import { useLocalSearchParams } from "expo-router"
@@ -35,21 +36,23 @@ export default function AdminCustomerReward() {
   const item = customer.items.find((entry) => entry.reward.id === rewardId)
   const showError = (error: Error) => Alert.alert("Something went wrong", error.message)
 
-  const confirmGive = () =>
-    Alert.alert("Give reward", `Give "${reward.data?.title}" to this customer now?`, [
+  const confirmGive = () => {
+    if (!item) return
+    Alert.alert(`Give ${item.reward.title}?`, giveRewardMessage(item, customer.points), [
       { text: "Cancel", style: "cancel" },
       {
-        text: "Give",
+        text: "Give reward",
         onPress: () =>
           giveReward(
             { userId, rewardId },
-            { onSuccess: () => Alert.alert("Done", "The reward was given."), onError: showError },
+            { onSuccess: () => Alert.alert("Done", `${item.reward.title} was given.`), onError: showError },
           ),
       },
     ])
+  }
 
   const confirmRemovePurchase = () =>
-    Alert.alert("Remove purchase", "Remove the last purchase from this card?", [
+    Alert.alert("Remove stamp", "Remove the last stamp from this card?", [
       { text: "Cancel", style: "cancel" },
       {
         text: "Remove",

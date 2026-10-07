@@ -39,7 +39,7 @@ export default function SignIn() {
         className="flex-1 justify-center px-6"
       >
         <View className="mb-8">
-          <Text className="text-center text-3xl font-bold text-blue-600">Welcome back</Text>
+          <Text className="text-center text-3xl font-bold text-primary-600">Welcome back</Text>
           <Text className="mt-2 text-center text-gray-600">Sign in to see your points and rewards</Text>
         </View>
 
@@ -65,7 +65,7 @@ export default function SignIn() {
         <View className="mt-4 flex-row items-center justify-center">
           <Text className="text-gray-600">No account yet? </Text>
           <Link href="/sign-up" replace asChild>
-            <Text className="font-semibold text-blue-600">Sign up</Text>
+            <Text className="font-semibold text-primary-600">Sign up</Text>
           </Link>
         </View>
 

@@ -1,9 +1,9 @@
-import { colors } from "@/constants/colors"
 import { RewardIcon } from "@/components/RewardIcon"
+import { colors } from "@/constants/colors"
 import { Reward } from "@/types"
 import { describeReward } from "@/utils/rewards"
 import { Ionicons } from "@expo/vector-icons"
-import { Pressable, Switch, Text, View } from "react-native"
+import { Alert, Pressable, Switch, Text, View } from "react-native"
 
 type Props = {
   reward: Reward
@@ -16,37 +16,37 @@ type Props = {
 export const RewardAdminListItem = ({ reward, isBusy, onToggleActive, onEdit, onDelete }: Props) => {
   const isActive = reward.status === "active"
 
+  const showMenu = () =>
+    Alert.alert(reward.title, describeReward(reward), [
+      { text: "Edit", onPress: onEdit },
+      { text: "Delete", style: "destructive", onPress: onDelete },
+      { text: "Cancel", style: "cancel" },
+    ])
+
   return (
-    <View className={`mb-3 rounded-xl bg-white p-4 shadow-sm ${isActive ? "" : "opacity-60"}`}>
-      <View className="flex-row items-center">
-        <RewardIcon reward={reward} size="small" />
-        <View className="ml-3 flex-1">
-          <Text className="text-base font-semibold text-gray-900">{reward.title}</Text>
-          <Text className="text-sm text-gray-500">
-            {describeReward(reward)}
-            {reward.is_one_time ? " · One time" : ""}
-          </Text>
-        </View>
-      </View>
-      <View className="mt-3 flex-row items-center justify-between border-t border-gray-100 pt-3">
-        <View className="flex-row items-center">
-          <Switch
-            value={isActive}
-            disabled={isBusy}
-            onValueChange={onToggleActive}
-            trackColor={{ true: colors.success, false: colors.muted }}
-          />
-          <Text className="ml-2 text-sm text-gray-600">{isActive ? "Active" : "Paused"}</Text>
-        </View>
-        <View className="flex-row">
-          <Pressable onPress={onEdit} disabled={isBusy} className="p-2">
-            <Ionicons name="create-outline" size={22} color={colors.primary} />
-          </Pressable>
-          <Pressable onPress={onDelete} disabled={isBusy} className="ml-2 p-2">
-            <Ionicons name="trash-outline" size={22} color={colors.danger} />
-          </Pressable>
-        </View>
-      </View>
+    <View
+      className={`mb-3 flex-row items-center rounded-2xl bg-white p-3 ${
+        isActive ? "border border-gray-200" : "border border-dashed border-gray-300 opacity-70"
+      }`}
+    >
+      <RewardIcon reward={reward} size="small" tone={isActive ? "primary" : "muted"} />
+      <Pressable onPress={onEdit} disabled={isBusy} className="ml-3 flex-1">
+        <Text className="text-base font-bold text-gray-900">{reward.title}</Text>
+        <Text className="text-xs text-gray-600">
+          {describeReward(reward)}
+          {reward.is_one_time ? " · one time" : ""}
+        </Text>
+      </Pressable>
+      <Switch
+        value={isActive}
+        disabled={isBusy}
+        onValueChange={onToggleActive}
+        accessibilityLabel={isActive ? "Active, tap to pause" : "Paused, tap to activate"}
+        trackColor={{ true: colors.success, false: colors.muted }}
+      />
+      <Pressable onPress={showMenu} disabled={isBusy} accessibilityLabel="More actions" className="ml-1 p-2">
+        <Ionicons name="ellipsis-vertical" size={20} color={colors.text} />
+      </Pressable>
     </View>
   )
 }

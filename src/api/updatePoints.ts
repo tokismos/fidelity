@@ -1,4 +1,4 @@
-import { Id, OperationType } from "@/types"
+import { Id, Json, OperationType, PointsUpdateResult } from "@/types"
 import { supabase } from "@/utils/supabase"
 
 type Props = {
@@ -6,6 +6,18 @@ type Props = {
   storeId: Id
   amount: number
   operationType: OperationType
+}
+
+// The function returns a json object, read its numbers
+const toResult = (data: Json): PointsUpdateResult | null => {
+  if (!data || typeof data !== "object" || Array.isArray(data)) return null
+
+  return {
+    previous_points: Number(data.previous_points),
+    new_points: Number(data.new_points),
+    amount: Number(data.amount),
+    multiplier: Number(data.multiplier),
+  }
 }
 
 export const updatePoints = async ({ userId, storeId, amount, operationType }: Props) => {
@@ -19,5 +31,5 @@ export const updatePoints = async ({ userId, storeId, amount, operationType }: P
   })
   if (error) throw error
 
-  return data
+  return toResult(data)
 }

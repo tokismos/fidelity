@@ -2,15 +2,16 @@ import { ButtonWithIndicator } from "@/components/ButtonWithIndicator"
 import { ErrorView } from "@/components/ErrorView"
 import { LoadingView } from "@/components/LoadingView"
 import { PhotoPicker } from "@/components/PhotoPicker"
-import { RewardConfigFields } from "@/components/RewardConfigFields"
 import { RewardAvailabilityField } from "@/components/RewardAvailabilityField"
+import { RewardConfigFields } from "@/components/RewardConfigFields"
 import { FormField } from "@/components/RewardFormField"
+import { RewardPreviewCard } from "@/components/RewardPreviewCard"
 import { REWARD_TYPE_INFO } from "@/constants/rewardTypes"
 import { useAddReward } from "@/hooks/useAddReward"
 import { useGetReward } from "@/hooks/useGetReward"
 import { useUpdateReward } from "@/hooks/useUpdateReward"
 import { RewardFormField, RewardFormValues, RewardType } from "@/types"
-import { EMPTY_REWARD_FORM, rewardToFormValues, validateRewardForm } from "@/utils/rewards"
+import { EMPTY_REWARD_FORM, previewReward, rewardToFormValues, validateRewardForm } from "@/utils/rewards"
 import { router, Stack, useLocalSearchParams } from "expo-router"
 import { useEffect, useState } from "react"
 import { Alert, KeyboardAvoidingView, Platform, ScrollView, Text, View } from "react-native"
@@ -54,22 +55,25 @@ export default function UpsertReward() {
   if (isEditMode && isLoading) return <LoadingView />
   if (error) return <ErrorView message={error.message} />
 
+  const info = REWARD_TYPE_INFO[type]
+
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} className="flex-1 bg-gray-50">
-      <Stack.Screen options={{ title: isEditMode ? "Edit reward" : "New reward" }} />
+      <Stack.Screen
+        options={{ title: isEditMode ? `Edit ${info.title.toLowerCase()}` : `New ${info.title.toLowerCase()}` }}
+      />
       <ScrollView contentContainerStyle={{ padding: 16 }} keyboardShouldPersistTaps="handled">
-        <View className="mb-4 rounded-xl bg-blue-50 p-4">
-          <Text className="font-semibold text-blue-900">{REWARD_TYPE_INFO[type].title}</Text>
-          <Text className="mt-1 text-sm text-blue-800">{REWARD_TYPE_INFO[type].description}</Text>
-        </View>
+        <RewardPreviewCard reward={previewReward(type, values)} />
+        <Text className="mb-4 text-sm text-gray-600">{info.description}.</Text>
 
-        <View className="rounded-xl bg-white p-4 shadow-sm">
+        <View className="rounded-2xl border border-gray-200 bg-white p-4">
           <FormField
             label="Reward name"
             value={values.title}
             onChangeText={(value) => setField("title", value)}
             placeholder="Free coffee"
           />
+          <RewardConfigFields type={type} values={values} onChange={setField} />
           <FormField
             label="Description"
             value={values.description}
@@ -77,7 +81,6 @@ export default function UpsertReward() {
             placeholder="What the customer gets"
             multiline
           />
-          <RewardConfigFields type={type} values={values} onChange={setField} />
           <RewardAvailabilityField
             isOneTime={values.is_one_time}
             onChange={(isOneTime) => setValues((previous) => ({ ...previous, is_one_time: isOneTime }))}

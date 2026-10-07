@@ -14,7 +14,7 @@ export const RewardTypeCard = ({ type, onPress }: Props) => {
 
   return (
     <Pressable onPress={onPress} className="mb-3 flex-row items-center rounded-xl bg-white p-4 shadow-sm">
-      <View className="h-12 w-12 items-center justify-center rounded-xl bg-blue-50">
+      <View className="h-12 w-12 items-center justify-center rounded-xl bg-primary-50">
         <Ionicons name={info.icon} size={24} color={colors.primary} />
       </View>
       <View className="ml-3 flex-1">

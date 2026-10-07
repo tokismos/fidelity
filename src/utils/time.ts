@@ -13,6 +13,10 @@ const dayKey = (date: Date, timeZone: string) => date.toLocaleDateString("en-CA"
 export const formatTime = (date: Date, timeZone: string) =>
   date.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", timeZone })
 
+// "14:32", in the phone's time zone
+export const formatClock = (date: string) =>
+  new Date(date).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })
+
 // "today 18:00", "tomorrow 10:00" or "Mon, Oct 6 10:00"
 export const formatDayAndTime = (date: Date, now: Date, timeZone: string) => {
   const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000)

@@ -1,10 +1,17 @@
+import { ScanTabButton } from "@/components/ScanTabButton"
 import { colors } from "@/constants/colors"
 import { Ionicons } from "@expo/vector-icons"
 import { Tabs } from "expo-router"
 
 export default function AdminTabsLayout() {
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: colors.primary }}>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.muted,
+        tabBarLabelStyle: { fontWeight: "600" },
+      }}
+    >
       <Tabs.Screen
         name="home"
         options={{
@@ -20,17 +27,25 @@ export default function AdminTabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="addRewards"
+        name="scan"
         options={{
-          title: "New reward",
-          tabBarIcon: ({ color, size }) => <Ionicons name="add-circle-outline" size={size} color={color} />,
+          title: "Scan",
+          // The raised center button opens the scanner from any tab
+          tabBarButton: () => <ScanTabButton />,
+        }}
+      />
+      <Tabs.Screen
+        name="promotions"
+        options={{
+          title: "Promos",
+          tabBarIcon: ({ color, size }) => <Ionicons name="flash-outline" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",
-          tabBarIcon: ({ color, size }) => <Ionicons name="settings-outline" size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <Ionicons name="options-outline" size={size} color={color} />,
         }}
       />
     </Tabs>

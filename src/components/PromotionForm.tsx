@@ -8,6 +8,8 @@ type Duration = "1h" | "2h" | "4h" | "midnight" | "custom"
 
 type Props = {
   isPending: boolean
+  // True while another promotion is running, the new one can only be scheduled after it
+  hasRunningPromotion: boolean
   onSubmit: (promotion: { multiplier: number; startsAt: Date; endsAt: Date }) => void
 }
 
@@ -16,7 +18,7 @@ const DURATIONS: { value: Duration; label: string }[] = [
   { value: "2h", label: "2 hours" },
   { value: "4h", label: "4 hours" },
   { value: "midnight", label: "Until midnight" },
-  { value: "custom", label: "Pick end" },
+  { value: "custom", label: "Pick an end" },
 ]
 
 const HOUR = 60 * 60 * 1000
@@ -44,9 +46,9 @@ const endFor = (duration: Duration, start: Date, customEnd: Date) => {
   }
 }
 
-export const PromotionForm = ({ isPending, onSubmit }: Props) => {
+export const PromotionForm = ({ isPending, hasRunningPromotion, onSubmit }: Props) => {
   const [multiplier, setMultiplier] = useState<"2" | "3">("2")
-  const [startMode, setStartMode] = useState<"now" | "later">("now")
+  const [startMode, setStartMode] = useState<"now" | "later">(hasRunningPromotion ? "later" : "now")
   const [startDate, setStartDate] = useState(() => addHours(new Date(), 1))
   const [duration, setDuration] = useState<Duration>("2h")
   const [customEnd, setCustomEnd] = useState(() => addHours(new Date(), 3))
@@ -64,12 +66,12 @@ export const PromotionForm = ({ isPending, onSubmit }: Props) => {
   }
 
   return (
-    <View className="rounded-xl bg-white p-4 shadow-sm">
-      <Text className="mb-1 text-sm font-semibold text-gray-700">Points multiplier</Text>
+    <View className="rounded-2xl border border-gray-200 bg-white p-4">
+      <Text className="mb-1 text-sm font-semibold text-gray-700">Multiplier</Text>
       <SegmentedControl
         options={[
-          { value: "2", label: "Double (x2)" },
-          { value: "3", label: "Triple (x3)" },
+          { value: "2", label: "x2 double" },
+          { value: "3", label: "x3 triple" },
         ]}
         value={multiplier}
         onChange={setMultiplier}
@@ -79,7 +81,7 @@ export const PromotionForm = ({ isPending, onSubmit }: Props) => {
       <SegmentedControl
         options={[
           { value: "now", label: "Now" },
-          { value: "later", label: "Later" },
+          { value: "later", label: "Schedule" },
         ]}
         value={startMode}
         onChange={setStartMode}
@@ -89,27 +91,41 @@ export const PromotionForm = ({ isPending, onSubmit }: Props) => {
           <DateTimeField label="Starts" value={startDate} minimumDate={new Date()} onChange={setStartDate} />
         </View>
       )}
+      {startMode === "now" && hasRunningPromotion && (
+        <Text className="mt-2 text-xs text-amber-800">
+          A promotion is already running. Promotions cannot overlap, so this one will be refused.
+        </Text>
+      )}
 
       <Text className="mb-2 mt-4 text-sm font-semibold text-gray-700">Duration</Text>
       <View className="flex-row flex-wrap">
-        {DURATIONS.map((option) => (
-          <Pressable
-            key={option.value}
-            onPress={() => setDuration(option.value)}
-            className={`mb-2 mr-2 rounded-full px-4 py-2 ${duration === option.value ? "bg-blue-600" : "bg-gray-100"}`}
-          >
-            <Text className={duration === option.value ? "font-semibold text-white" : "text-gray-700"}>
-              {option.label}
-            </Text>
-          </Pressable>
-        ))}
+        {DURATIONS.map((option) => {
+          const isSelected = duration === option.value
+          return (
+            <Pressable
+              key={option.value}
+              onPress={() => setDuration(option.value)}
+              className={`mb-2 mr-2 rounded-full px-4 py-2 ${
+                isSelected ? "bg-gray-900" : "border border-gray-200 bg-white"
+              }`}
+            >
+              <Text className={`text-sm font-semibold ${isSelected ? "text-white" : "text-gray-700"}`}>
+                {option.label}
+              </Text>
+            </Pressable>
+          )
+        })}
       </View>
       {duration === "custom" && (
         <DateTimeField label="Ends" value={customEnd} minimumDate={new Date()} onChange={setCustomEnd} />
       )}
 
       <View className="mt-3">
-        <ButtonWithIndicator title="Start promotion" isLoading={isPending} onPress={submit} />
+        <ButtonWithIndicator
+          title={startMode === "now" ? "Start promotion" : "Schedule promotion"}
+          isLoading={isPending}
+          onPress={submit}
+        />
       </View>
     </View>
   )

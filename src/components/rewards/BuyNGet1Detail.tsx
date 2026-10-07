@@ -25,7 +25,7 @@ export const BuyNGet1Detail = ({ reward, progress, admin }: Props) => {
             <View
               key={index}
               className={`m-1 h-12 w-12 items-center justify-center rounded-full border-2 ${
-                index < progress.current ? "border-blue-600 bg-blue-600" : "border-gray-300 bg-white"
+                index < progress.current ? "border-primary-600 bg-primary-600" : "border-gray-300 bg-white"
               }`}
             >
               {index < progress.current ? (

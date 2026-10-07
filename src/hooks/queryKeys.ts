@@ -18,14 +18,17 @@ export const queryKeys = {
   rewards: {
     all: ["rewards"],
     byStore: (storeId: Id, activeOnly: boolean) => ["rewards", { storeId, activeOnly }],
+    byStores: (storeIds: string[]) => ["rewards", { storeIds }],
     byId: (rewardId: Id) => ["rewards", { rewardId }],
   },
   progress: {
     all: ["progress"],
+    byUser: (userId: Id) => ["progress", { userId }],
     byUserStore: (userId: Id, storeId: Id) => ["progress", { userId, storeId }],
   },
   givenRewards: {
     all: ["givenRewards"],
+    byUser: (userId: Id) => ["givenRewards", { userId }],
     byUserStore: (userId: Id, storeId: Id) => ["givenRewards", { userId, storeId }],
   },
   purchaseLog: {

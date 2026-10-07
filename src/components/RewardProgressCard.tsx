@@ -1,7 +1,7 @@
 import { ProgressBar } from "@/components/ProgressBar"
 import { RewardIcon } from "@/components/RewardIcon"
 import { RewardWithProgress } from "@/types"
-import { describeReward, progressLabel } from "@/utils/rewards"
+import { describeReward, remainingLabel } from "@/utils/rewards"
 import { Href, Link } from "expo-router"
 import { Pressable, Text, View } from "react-native"
 
@@ -11,32 +11,44 @@ type Props = {
   readyLabel: string
 }
 
-export const RewardProgressCard = ({ item: { reward, progress }, href, readyLabel }: Props) => (
-  <Link href={href} asChild>
-    <Pressable className="mb-3 rounded-xl bg-white p-4 shadow-sm">
-      <View className="flex-row items-center">
-        <RewardIcon reward={reward} size="small" />
-        <View className="ml-3 flex-1">
-          <Text className="text-base font-semibold text-gray-900">{reward.title}</Text>
-          <Text className="text-sm text-gray-500">{describeReward(reward)}</Text>
+export const RewardProgressCard = ({ item: { reward, progress }, href, readyLabel }: Props) => {
+  const isHighlighted = progress.isReady && progress.unit !== null
+  const subtitle = progress.isFinished
+    ? "One time offer · already received"
+    : progress.unit
+      ? `${describeReward(reward)} · ${isHighlighted ? "ready" : remainingLabel(progress)}`
+      : `${describeReward(reward)} · no points needed`
+
+  return (
+    <Link href={href} asChild>
+      <Pressable
+        className={`mb-3 rounded-2xl bg-white p-4 ${
+          isHighlighted ? "border-2 border-green-600" : "border border-gray-200"
+        } ${progress.isFinished ? "opacity-60" : ""}`}
+      >
+        <View className="flex-row items-center">
+          <RewardIcon reward={reward} size="small" tone={isHighlighted ? "success" : "primary"} />
+          <View className="ml-3 flex-1">
+            <Text className="text-base font-bold text-gray-900">{reward.title}</Text>
+            <Text className="text-sm text-gray-600">{subtitle}</Text>
+          </View>
+          {isHighlighted && (
+            <View className="rounded-full bg-green-600 px-3 py-1">
+              <Text className="text-xs font-bold text-white">{readyLabel}</Text>
+            </View>
+          )}
+          {progress.unit && !progress.isReady && !progress.isFinished && (
+            <Text className="text-sm font-bold text-primary-700">
+              {progress.current}/{progress.target}
+            </Text>
+          )}
         </View>
-        {progress.unit && progress.isReady && (
-          <View className="rounded-full bg-green-100 px-3 py-1">
-            <Text className="text-xs font-semibold text-green-700">{readyLabel}</Text>
-          </View>
-        )}
-        {progress.isFinished && (
-          <View className="rounded-full bg-gray-100 px-3 py-1">
-            <Text className="text-xs font-semibold text-gray-600">Received</Text>
-          </View>
-        )}
-      </View>
-      <View className="mt-3">
         {progress.unit && !progress.isFinished && (
-          <ProgressBar current={progress.current} target={progress.target} isReady={progress.isReady} />
+          <View className="mt-3">
+            <ProgressBar current={progress.current} target={progress.target} isReady={progress.isReady} />
+          </View>
         )}
-        <Text className="mt-1 text-xs text-gray-500">{progressLabel(progress)}</Text>
-      </View>
-    </Pressable>
-  </Link>
-)
+      </Pressable>
+    </Link>
+  )
+}
