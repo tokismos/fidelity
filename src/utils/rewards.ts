@@ -53,13 +53,6 @@ export const getRewardProgress = (
   }
 }
 
-export const progressLabel = ({ current, target, unit, isFinished }: RewardProgress) => {
-  if (isFinished) return "Already received"
-  if (unit === "points") return `${current} / ${target} points`
-  if (unit === "purchases") return `${current} / ${target} purchases`
-  return "No points needed"
-}
-
 export const EMPTY_REWARD_FORM: RewardFormValues = {
   title: "",
   description: "",
@@ -114,7 +107,6 @@ export const rewardToFormValues = (reward: Reward): RewardFormValues => {
 // Returns the error to show, or null when the form is complete
 export const validateRewardForm = (type: RewardType, values: RewardFormValues) => {
   if (!values.title.trim()) return "Please enter a reward name."
-  if (!values.description.trim()) return "Please enter a description."
 
   for (const field of REWARD_FORM_FIELDS[type]) {
     const value = values[field.key].trim()
@@ -128,6 +120,10 @@ export const validateRewardForm = (type: RewardType, values: RewardFormValues) =
 
   return null
 }
+
+// The description is optional in the form: when it is empty, save the line that says what the customer gets
+export const withDefaultDescription = (type: RewardType, values: RewardFormValues): RewardFormValues =>
+  values.description.trim() ? values : { ...values, description: describeReward(previewReward(type, values)) }
 
 // Call after validateRewardForm returned null
 export const buildRewardConfig = (type: RewardType, values: RewardFormValues, imageUrl: string | null) => {
@@ -152,5 +148,55 @@ export const buildRewardConfig = (type: RewardType, values: RewardFormValues, im
   return { ...config, ...image }
 }
 
-export const formatDate = (date: string) =>
-  new Date(date).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })
+// A reward as the form describes it so far, for the live preview. Missing numbers count as 0.
+export const previewReward = (type: RewardType, values: RewardFormValues): Reward => {
+  const base = {
+    id: "preview",
+    created_at: new Date().toISOString(),
+    title: values.title.trim() || "Reward name",
+    description: values.description,
+    status: "active" as const,
+    store_id: "",
+    cost_points: true,
+    is_one_time: values.is_one_time,
+  }
+  const image = values.image ? { image_path: values.image } : {}
+  const points = Math.max(0, Math.round(Number(values.points_needed_value) || 0))
+
+  switch (type) {
+    case "BUY_N_GET_1":
+      return {
+        ...base,
+        type,
+        config: { ...image, required_purchases: Math.max(1, Math.round(Number(values.required_purchases) || 0)) },
+      }
+    case "DISCOUNT_PERCENTAGE":
+      return {
+        ...base,
+        type,
+        config: { ...image, discount_percentage: Number(values.discount_percentage) || 0, points_needed_value: points },
+      }
+    case "DISCOUNT_FIX":
+      return {
+        ...base,
+        type,
+        config: { ...image, discount_amount: Number(values.discount_amount) || 0, points_needed_value: points },
+      }
+    case "FREE_ITEM":
+      return {
+        ...base,
+        type,
+        config: { ...image, item_name: values.item_name.trim() || "item", points_needed_value: points },
+      }
+    case "FREE_ITEM_WITH_PURCHASE":
+      return {
+        ...base,
+        type,
+        config: {
+          ...image,
+          item_name: values.item_name.trim() || "item",
+          free_item_name: values.free_item_name.trim() || "gift",
+        },
+      }
+  }
+}

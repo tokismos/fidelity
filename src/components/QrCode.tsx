@@ -1,14 +1,12 @@
-import { View } from "react-native"
+import { colors } from "@/constants/colors"
 import QRCode from "react-native-qrcode-svg"
 
 type Props = {
   value: string
+  size?: number
 }
 
-export const QrCode = ({ value }: Props) => {
-  return (
-    <View className="p-3">
-      <QRCode value={value} size={200} />
-    </View>
-  )
-}
+// Navy on white, so it scans well. Put it on a white Card.
+export const QrCode = ({ value, size = 210 }: Props) => (
+  <QRCode value={value} size={size} color={colors.ink} backgroundColor={colors.white} />
+)

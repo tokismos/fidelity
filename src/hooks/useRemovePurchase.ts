@@ -11,6 +11,8 @@ export const useRemovePurchase = () => {
       Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.progress.all }),
         queryClient.invalidateQueries({ queryKey: queryKeys.purchaseLog.all }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.customers.all }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.todayStats.all }),
       ]),
   })
 
