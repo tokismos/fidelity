@@ -20,6 +20,22 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_settings: {
+        Row: {
+          key: string
+          value: string
+        }
+        ComputedFields: never
+        Insert: {
+          key: string
+          value: string
+        }
+        Update: {
+          key?: string
+          value?: string
+        }
+        Relationships: []
+      }
       history: {
         Row: {
           created_at: string
@@ -32,6 +48,7 @@ export type Database = {
           transaction_amount: number
           user_id: string
         }
+        ComputedFields: never
         Insert: {
           created_at?: string
           id?: string
@@ -76,18 +93,22 @@ export type Database = {
           created_at: string | null
           email: string | null
           id: string
+          name: string | null
           role: Database["public"]["Enums"]["role"]
         }
+        ComputedFields: never
         Insert: {
           created_at?: string | null
           email?: string | null
           id?: string
+          name?: string | null
           role?: Database["public"]["Enums"]["role"]
         }
         Update: {
           created_at?: string | null
           email?: string | null
           id?: string
+          name?: string | null
           role?: Database["public"]["Enums"]["role"]
         }
         Relationships: []
@@ -101,6 +122,7 @@ export type Database = {
           starts_at: string
           store_id: string
         }
+        ComputedFields: never
         Insert: {
           created_at?: string
           ends_at: string
@@ -136,6 +158,7 @@ export type Database = {
           store_id: string
           user_id: string
         }
+        ComputedFields: never
         Insert: {
           change: number
           created_at?: string
@@ -186,6 +209,7 @@ export type Database = {
           updated_at: string
           user_id: string
         }
+        ComputedFields: never
         Insert: {
           created_at?: string
           id?: string
@@ -241,6 +265,7 @@ export type Database = {
           title: string
           type: Database["public"]["Enums"]["reward_types"]
         }
+        ComputedFields: never
         Insert: {
           config: NonNullable<Json>
           cost_points: boolean
@@ -284,6 +309,7 @@ export type Database = {
           owner_id: string
           timezone: string | null
         }
+        ComputedFields: never
         Insert: {
           created_at?: string
           id?: string
@@ -314,15 +340,18 @@ export type Database = {
         Row: {
           config: NonNullable<Json>
           created_at: string
+          from_wheel: boolean
           id: string
           reward_id: string
           status: Database["public"]["Enums"]["user_reward_status"]
           store_id: string
           user_id: string
         }
+        ComputedFields: never
         Insert: {
           config: NonNullable<Json>
           created_at?: string
+          from_wheel?: boolean
           id?: string
           reward_id: string
           status?: Database["public"]["Enums"]["user_reward_status"]
@@ -332,6 +361,7 @@ export type Database = {
         Update: {
           config?: NonNullable<Json>
           created_at?: string
+          from_wheel?: boolean
           id?: string
           reward_id?: string
           status?: Database["public"]["Enums"]["user_reward_status"]
@@ -370,6 +400,7 @@ export type Database = {
           store_id: string
           user_id: string
         }
+        ComputedFields: never
         Insert: {
           created_at?: string
           id?: string
@@ -401,6 +432,115 @@ export type Database = {
           },
         ]
       }
+      wheel_slices: {
+        Row: {
+          created_at: string
+          id: string
+          points: number | null
+          reward_id: string | null
+          store_id: string
+          weekly_limit: number | null
+          weight: number
+        }
+        ComputedFields: never
+        Insert: {
+          created_at?: string
+          id?: string
+          points?: number | null
+          reward_id?: string | null
+          store_id: string
+          weekly_limit?: number | null
+          weight: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          points?: number | null
+          reward_id?: string | null
+          store_id?: string
+          weekly_limit?: number | null
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wheel_slices_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "rewards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wheel_slices_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wheel_spins: {
+        Row: {
+          created_at: string
+          given_at: string | null
+          id: string
+          points: number | null
+          reward_id: string | null
+          slice_id: string | null
+          store_id: string
+          user_id: string
+        }
+        ComputedFields: never
+        Insert: {
+          created_at?: string
+          given_at?: string | null
+          id?: string
+          points?: number | null
+          reward_id?: string | null
+          slice_id?: string | null
+          store_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          given_at?: string | null
+          id?: string
+          points?: number | null
+          reward_id?: string | null
+          slice_id?: string | null
+          store_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wheel_spins_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "rewards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wheel_spins_slice_id_fkey"
+            columns: ["slice_id"]
+            isOneToOne: false
+            referencedRelation: "wheel_slices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wheel_spins_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wheel_spins_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -418,9 +558,11 @@ export type Database = {
         }[]
       }
       give_reward: { Args: { p_reward_id: string; p_user_id: string }; Returns: string }
+      give_wheel_prize: { Args: { p_spin_id: string }; Returns: string }
       is_one_time_reward_used: { Args: { p_reward_id: string; p_user_id: string }; Returns: boolean }
       is_store_owner: { Args: { p_store_id: string }; Returns: boolean }
       remove_purchase: { Args: { p_reward_id: string; p_user_id: string }; Returns: number }
+      spin_wheel: { Args: { p_ignore_wait?: boolean; p_store_id: string }; Returns: Json }
       update_points_with_history: {
         Args: {
           p_operation_type: Database["public"]["Enums"]["operation_type"]
@@ -434,7 +576,7 @@ export type Database = {
       validate_string_value: { Args: { key: string; value: string }; Returns: undefined }
     }
     Enums: {
-      operation_type: "add" | "subtract" | "reward_redemption"
+      operation_type: "add" | "subtract" | "reward_redemption" | "wheel_bonus"
       reward_status: "active" | "paused"
       reward_types: "BUY_N_GET_1" | "DISCOUNT_PERCENTAGE" | "DISCOUNT_FIX" | "FREE_ITEM" | "FREE_ITEM_WITH_PURCHASE"
       role: "user" | "admin"
@@ -549,7 +691,7 @@ export const Constants = {
   },
   public: {
     Enums: {
-      operation_type: ["add", "subtract", "reward_redemption"],
+      operation_type: ["add", "subtract", "reward_redemption", "wheel_bonus"],
       reward_status: ["active", "paused"],
       reward_types: ["BUY_N_GET_1", "DISCOUNT_PERCENTAGE", "DISCOUNT_FIX", "FREE_ITEM", "FREE_ITEM_WITH_PURCHASE"],
       role: ["user", "admin"],
