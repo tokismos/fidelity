@@ -1,6 +1,5 @@
 import { supabase } from "@/utils/supabase"
 import { decode } from "base64-arraybuffer"
-import * as Crypto from "expo-crypto"
 import * as FileSystem from "expo-file-system/legacy"
 
 type Props = {
@@ -11,7 +10,8 @@ type Props = {
 // Uploads a local photo to the public images bucket and returns its public URL
 export const uploadImageToBucket = async ({ uri, folder }: Props) => {
   const base64 = await FileSystem.readAsStringAsync(uri, { encoding: "base64" })
-  const path = `${folder}/${Crypto.randomUUID()}.jpg`
+  const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+  const path = `${folder}/${fileName}.jpg`
 
   const { error } = await supabase.storage.from("images").upload(path, decode(base64), { contentType: "image/jpeg" })
   if (error) throw error
