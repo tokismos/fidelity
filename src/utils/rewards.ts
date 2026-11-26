@@ -1,5 +1,5 @@
 import { REWARD_FORM_FIELDS } from "@/constants/rewardTypes"
-import { Reward, RewardConfig, RewardFormValues, RewardProgress, RewardType, RewardWithProgress } from "@/types"
+import { Reward, RewardConfig, RewardFormValues, RewardProgress, RewardType } from "@/types"
 
 // One line that says what the customer gets
 export const describeReward = (reward: Reward) => {
@@ -51,13 +51,6 @@ export const getRewardProgress = (
     case "FREE_ITEM_WITH_PURCHASE":
       return { current: 0, target: 0, unit: null, isReady: !isFinished, isFinished }
   }
-}
-
-export const progressLabel = ({ current, target, unit, isFinished }: RewardProgress) => {
-  if (isFinished) return "Already received"
-  if (unit === "points") return `${current} / ${target} points`
-  if (unit === "purchases") return `${current} / ${target} purchases`
-  return "No points needed"
 }
 
 export const EMPTY_REWARD_FORM: RewardFormValues = {
@@ -114,7 +107,6 @@ export const rewardToFormValues = (reward: Reward): RewardFormValues => {
 // Returns the error to show, or null when the form is complete
 export const validateRewardForm = (type: RewardType, values: RewardFormValues) => {
   if (!values.title.trim()) return "Please enter a reward name."
-  if (!values.description.trim()) return "Please enter a description."
 
   for (const field of REWARD_FORM_FIELDS[type]) {
     const value = values[field.key].trim()
@@ -128,6 +120,10 @@ export const validateRewardForm = (type: RewardType, values: RewardFormValues) =
 
   return null
 }
+
+// The description is optional in the form: when it is empty, save the line that says what the customer gets
+export const withDefaultDescription = (type: RewardType, values: RewardFormValues): RewardFormValues =>
+  values.description.trim() ? values : { ...values, description: describeReward(previewReward(type, values)) }
 
 // Call after validateRewardForm returned null
 export const buildRewardConfig = (type: RewardType, values: RewardFormValues, imageUrl: string | null) => {
@@ -150,64 +146,6 @@ export const buildRewardConfig = (type: RewardType, values: RewardFormValues, im
   })()
 
   return { ...config, ...image }
-}
-
-export const formatDate = (date: string) =>
-  new Date(date).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })
-
-// "2 more stamps" or "180 more points", empty when there is nothing to count
-export const remainingLabel = ({ current, target, unit, isReady, isFinished }: RewardProgress) => {
-  if (isFinished || isReady || !unit) return ""
-  const remaining = target - current
-  const noun = unit === "purchases" ? "stamp" : "point"
-  return `${remaining} more ${noun}${remaining === 1 ? "" : "s"}`
-}
-
-// How far a customer is on a reward, from 0 to 1
-const completion = ({ current, target, unit, isFinished }: RewardProgress) => {
-  if (isFinished) return -1
-  if (!unit || target === 0) return 0
-  return current / target
-}
-
-// The reward to show first: a ready one, else the one closest to being ready
-export const nextReward = (items: RewardWithProgress[]) => {
-  const countable = items.filter((item) => item.progress.unit !== null && !item.progress.isFinished)
-  const ready = countable.find((item) => item.progress.isReady)
-  if (ready) return ready
-
-  return [...countable].sort((a, b) => completion(b.progress) - completion(a.progress))[0]
-}
-
-export type RewardGroup = "ready" | "inProgress" | "received"
-
-export const REWARD_GROUP_TITLES: Record<RewardGroup, string> = {
-  ready: "Ready to use",
-  inProgress: "In progress",
-  received: "Received",
-}
-
-const rewardGroup = ({ progress }: RewardWithProgress): RewardGroup => {
-  if (progress.isFinished) return "received"
-  if (progress.isReady) return "ready"
-  return "inProgress"
-}
-
-// A list of rewards with a title before each group, ready ones first
-export type RewardRow =
-  { kind: "title"; id: string; title: string } | { kind: "reward"; id: string; item: RewardWithProgress }
-
-export const rewardRows = (items: RewardWithProgress[], titles = REWARD_GROUP_TITLES): RewardRow[] => {
-  const groups: RewardGroup[] = ["ready", "inProgress", "received"]
-
-  return groups.flatMap((group) => {
-    const members = items.filter((item) => rewardGroup(item) === group)
-    if (members.length === 0) return []
-    return [
-      { kind: "title" as const, id: `title-${group}`, title: titles[group] },
-      ...members.map((item) => ({ kind: "reward" as const, id: item.reward.id, item })),
-    ]
-  })
 }
 
 // A reward as the form describes it so far, for the live preview. Missing numbers count as 0.
@@ -260,17 +198,5 @@ export const previewReward = (type: RewardType, values: RewardFormValues): Rewar
           free_item_name: values.free_item_name.trim() || "gift",
         },
       }
-  }
-}
-
-// The text of the confirmation before an admin gives a reward: what it costs and what is left
-export const giveRewardMessage = ({ reward, progress }: RewardWithProgress, points: number) => {
-  switch (reward.type) {
-    case "BUY_N_GET_1":
-      return "The card goes back to 0 stamps."
-    case "FREE_ITEM_WITH_PURCHASE":
-      return `Give it only when the customer buys a ${reward.config.item_name}.`
-    default:
-      return `${progress.target} points will be taken: ${points} points now, ${points - progress.target} after.`
   }
 }

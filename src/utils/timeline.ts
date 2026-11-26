@@ -45,19 +45,12 @@ export const buildTimeline = ({ history, givenRewards, purchases }: Props): Time
     date: given.created_at,
     rewardId: given.reward_id,
     title: given.reward?.title ?? "Reward",
-    pointsCost: "points_needed_value" in given.config ? given.config.points_needed_value : null,
+    pointsCost: !given.from_wheel && "points_needed_value" in given.config ? given.config.points_needed_value : null,
+    fromWheel: given.from_wheel,
   }))
 
   return [...points, ...purchaseLines, ...rewards].sort((a, b) => b.date.localeCompare(a.date))
 }
-
-// Only the lines about one reward
-export const rewardTimeline = (timeline: TimelineEntry[], rewardId: string) =>
-  timeline.filter((entry) => entry.kind !== "points" && entry.rewardId === rewardId)
-
-// A visit is a day with at least one line in the timeline
-export const countVisits = (timeline: TimelineEntry[]) =>
-  new Set(timeline.map((entry) => new Date(entry.date).toDateString())).size
 
 // Lines of the same day are shown under one date title
 export type TimelineRow =

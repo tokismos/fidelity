@@ -1,4 +1,5 @@
 import { LoadingView } from "@/components/LoadingView"
+import { stackScreenOptions } from "@/constants/navigation"
 import { useAuth } from "@/hooks/useAuth"
 import { Redirect, Stack } from "expo-router"
 
@@ -9,11 +10,10 @@ export default function UserLayout() {
   if (!session) return <Redirect href="/sign-in" />
   if (isAdmin) return <Redirect href="/admin/home" />
 
+  // Every screen draws its own NavBar, so no screen needs to be listed except the tabs
   return (
-    <Stack screenOptions={{ headerBackTitle: "Back" }}>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="store/[storeId]" options={{ title: "Store" }} />
-      <Stack.Screen name="reward/[rewardId]" options={{ title: "Reward" }} />
+    <Stack screenOptions={stackScreenOptions}>
+      <Stack.Screen name="(tabs)" />
     </Stack>
   )
 }

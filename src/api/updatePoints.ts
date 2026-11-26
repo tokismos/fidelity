@@ -1,4 +1,5 @@
 import { Id, Json, OperationType, PointsUpdateResult } from "@/types"
+import { asJsonObject } from "@/utils/json"
 import { supabase } from "@/utils/supabase"
 
 type Props = {
@@ -10,13 +11,14 @@ type Props = {
 
 // The function returns a json object, read its numbers
 const toResult = (data: Json): PointsUpdateResult | null => {
-  if (!data || typeof data !== "object" || Array.isArray(data)) return null
+  const result = asJsonObject(data)
+  if (!result) return null
 
   return {
-    previous_points: Number(data.previous_points),
-    new_points: Number(data.new_points),
-    amount: Number(data.amount),
-    multiplier: Number(data.multiplier),
+    previous_points: Number(result.previous_points),
+    new_points: Number(result.new_points),
+    amount: Number(result.amount),
+    multiplier: Number(result.multiplier),
   }
 }
 

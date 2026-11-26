@@ -4,9 +4,9 @@ import { useGetUserGivenRewards } from "@/hooks/useGetUserGivenRewards"
 import { useGetUserProgress } from "@/hooks/useGetUserProgress"
 import { useGetUserStores } from "@/hooks/useGetUserStores"
 import { RewardWithProgress, StoreOverview } from "@/types"
-import { getRewardProgress, nextReward } from "@/utils/rewards"
+import { getRewardProgress } from "@/utils/rewards"
 
-// Every store card of the signed in customer, with the reward they are closest to
+// Every store card of the signed in customer, with where they stand on each reward
 export const useStoreOverviews = () => {
   const { userId } = useAuth()
   const userStores = useGetUserStores()
@@ -28,7 +28,6 @@ export const useStoreOverviews = () => {
       userStore,
       items,
       readyCount: items.filter((item) => item.progress.isReady && item.progress.unit !== null).length,
-      nextReward: nextReward(items),
     }
   })
 

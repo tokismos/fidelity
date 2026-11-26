@@ -1,29 +1,32 @@
-import { colors } from "@/constants/colors"
-import { Ionicons } from "@expo/vector-icons"
+import { RaisedTabButton } from "@/components/RaisedTabButton"
+import { TabBarIcon } from "@/components/TabBarIcon"
+import { tabScreenOptions } from "@/constants/navigation"
 import { Tabs } from "expo-router"
 
 export default function UserTabsLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.muted,
-        tabBarLabelStyle: { fontWeight: "600" },
-      }}
-    >
+    <Tabs screenOptions={tabScreenOptions}>
       <Tabs.Screen
         name="home"
+        options={{ title: "My cards", tabBarIcon: ({ color }) => <TabBarIcon name="card-outline" color={color} /> }}
+      />
+      <Tabs.Screen
+        name="code"
         options={{
-          title: "My stores",
-          tabBarIcon: ({ color, size }) => <Ionicons name="storefront-outline" size={size} color={color} />,
+          title: "My code",
+          tabBarButton: ({ onPress }) => (
+            <RaisedTabButton
+              icon="qr-code-outline"
+              label="My code"
+              accessibilityLabel="My code"
+              onPress={(event) => onPress?.(event)}
+            />
+          ),
         }}
       />
       <Tabs.Screen
-        name="profile"
-        options={{
-          title: "My QR code",
-          tabBarIcon: ({ color, size }) => <Ionicons name="qr-code-outline" size={size} color={color} />,
-        }}
+        name="rewards"
+        options={{ title: "Rewards", tabBarIcon: ({ color }) => <TabBarIcon name="gift-outline" color={color} /> }}
       />
     </Tabs>
   )

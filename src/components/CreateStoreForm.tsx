@@ -1,14 +1,17 @@
-import { ButtonWithIndicator } from "@/components/ButtonWithIndicator"
 import { PhotoPicker } from "@/components/PhotoPicker"
-import { FormField } from "@/components/RewardFormField"
+import { Button } from "@/components/ui/Button"
+import { Field } from "@/components/ui/Field"
+import { LargeTitle } from "@/components/ui/LargeTitle"
+import { Screen } from "@/components/ui/Screen"
 import { useState } from "react"
-import { Alert, Text, View } from "react-native"
+import { Alert, View } from "react-native"
 
 type Props = {
   isPending: boolean
   onSubmit: (store: { name: string; imageUri: string }) => void
 }
 
+// The whole Home screen of an owner who has no store yet
 export const CreateStoreForm = ({ isPending, onSubmit }: Props) => {
   const [name, setName] = useState("")
   const [imageUri, setImageUri] = useState<string | null>(null)
@@ -20,12 +23,14 @@ export const CreateStoreForm = ({ isPending, onSubmit }: Props) => {
   }
 
   return (
-    <View className="rounded-xl bg-white p-5 shadow-sm">
-      <Text className="mb-1 text-2xl font-bold text-gray-900">Create your store</Text>
-      <Text className="mb-5 text-gray-500">Customers will see this name and photo.</Text>
-      <FormField label="Store name" value={name} onChangeText={setName} placeholder="My coffee shop" />
-      <PhotoPicker label="Store photo" image={imageUri} onChange={setImageUri} />
-      <ButtonWithIndicator title="Create store" isLoading={isPending} onPress={submit} />
-    </View>
+    <Screen scroll footer={<Button title="Create store" onPress={submit} isLoading={isPending} />}>
+      <View className="pt-4">
+        <LargeTitle title="Create your store" subtitle="Customers will see this name and photo." />
+      </View>
+      <View className="gap-5 px-4 pt-7">
+        <Field label="Store name" value={name} onChangeText={setName} placeholder="My coffee shop" />
+        <PhotoPicker label="Store photo" image={imageUri} onChange={setImageUri} size="wide" />
+      </View>
+    </Screen>
   )
 }

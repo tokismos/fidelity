@@ -1,4 +1,5 @@
 import { LoadingView } from "@/components/LoadingView"
+import { stackScreenOptions } from "@/constants/navigation"
 import { useAuth } from "@/hooks/useAuth"
 import { Redirect, Stack } from "expo-router"
 
@@ -9,14 +10,14 @@ export default function AdminLayout() {
   if (!session) return <Redirect href="/sign-in" />
   if (!isAdmin) return <Redirect href="/user/home" />
 
+  // Every screen draws its own NavBar. Only screens with special options are listed.
   return (
-    <Stack screenOptions={{ headerBackTitle: "Back" }}>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="newReward" options={{ title: "New reward" }} />
-      <Stack.Screen name="upsert" options={{ title: "Reward" }} />
-      <Stack.Screen name="scanner" options={{ headerShown: false, presentation: "fullScreenModal" }} />
-      <Stack.Screen name="customer/[userId]/index" options={{ title: "Customer" }} />
-      <Stack.Screen name="customer/[userId]/reward/[rewardId]" options={{ title: "Reward" }} />
+    <Stack screenOptions={stackScreenOptions}>
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="scanner" options={{ presentation: "fullScreenModal" }} />
+      <Stack.Screen name="newReward" options={{ presentation: "modal" }} />
+      {/* A modal sheet both when it comes from newReward and when it edits a reward from Program */}
+      <Stack.Screen name="upsert" options={{ presentation: "modal" }} />
     </Stack>
   )
 }

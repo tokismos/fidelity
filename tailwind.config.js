@@ -5,19 +5,37 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Brand teal, used through `primary-*` classes. Keep in sync with src/constants/colors.ts
-        primary: {
-          50: "#F0FDFA",
-          100: "#CCFBF1",
-          200: "#99F6E4",
-          300: "#5EEAD4",
-          400: "#2DD4BF",
-          500: "#14B8A6",
-          600: "#0F766E",
-          700: "#115E59",
-          800: "#134E4A",
-          900: "#0F3F3C",
+        // Path design tokens. Keep in sync with src/constants/colors.ts
+        ground: "#EEF2F6",
+        surface: "#FFFFFF",
+        sunk: "#E3E9F0",
+        ink: {
+          DEFAULT: "#10243E",
+          2: "#56677E",
+          3: "#8A98AB",
         },
+        line: {
+          DEFAULT: "#D5DDE7",
+          2: "#B8C3D1",
+        },
+        rose: {
+          DEFAULT: "#D6336C",
+          soft: "#FBE4EC",
+          ink: "#A8204F",
+        },
+        sun: {
+          DEFAULT: "#F5B93A",
+          soft: "#FDF0CF",
+        },
+        danger: {
+          DEFAULT: "#B3261E",
+          line: "#E9C5C2",
+        },
+      },
+      fontFamily: {
+        rh: ["RedHatDisplay_500Medium"],
+        "rh-bold": ["RedHatDisplay_700Bold"],
+        "rh-black": ["RedHatDisplay_900Black"],
       },
     },
   },

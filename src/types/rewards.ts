@@ -83,11 +83,3 @@ export type RewardWithProgress = {
   reward: Reward
   progress: RewardProgress
 }
-
-// Actions shown only to the store admin on a reward screen
-export type RewardAdminActions = {
-  onGive: () => void
-  onAddPurchase: () => void
-  onRemovePurchase: () => void
-  isPending: boolean
-}

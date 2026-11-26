@@ -11,7 +11,7 @@ export const getGivenRewards = async ({ userId, storeId }: Props) => {
 
   const { data, error } = await supabase
     .from("user_rewards")
-    .select("id, created_at, reward_id, config, reward:rewards(title, type)")
+    .select("id, created_at, reward_id, config, from_wheel, reward:rewards(title, type)")
     .eq("user_id", userId)
     .eq("store_id", storeId)
     .order("created_at", { ascending: false })

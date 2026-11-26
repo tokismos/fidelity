@@ -10,7 +10,7 @@ export const getStoreCustomers = async ({ storeId }: Props) => {
 
   const { data, error } = await supabase
     .from("user_stores")
-    .select("id, points, user_id, created_at, profile:profiles(email)")
+    .select("id, points, user_id, created_at, profile:profiles(name, email)")
     .eq("store_id", storeId)
     .order("created_at", { ascending: false })
     .returns<StoreCustomer[]>()

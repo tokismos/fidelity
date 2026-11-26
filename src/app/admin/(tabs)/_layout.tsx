@@ -1,52 +1,27 @@
 import { ScanTabButton } from "@/components/ScanTabButton"
-import { colors } from "@/constants/colors"
-import { Ionicons } from "@expo/vector-icons"
+import { TabBarIcon } from "@/components/TabBarIcon"
+import { tabScreenOptions } from "@/constants/navigation"
 import { Tabs } from "expo-router"
 
 export default function AdminTabsLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.muted,
-        tabBarLabelStyle: { fontWeight: "600" },
-      }}
-    >
+    <Tabs screenOptions={tabScreenOptions}>
       <Tabs.Screen
         name="home"
-        options={{
-          title: "Home",
-          tabBarIcon: ({ color, size }) => <Ionicons name="storefront-outline" size={size} color={color} />,
-        }}
+        options={{ title: "Home", tabBarIcon: ({ color }) => <TabBarIcon name="home-outline" color={color} /> }}
       />
       <Tabs.Screen
-        name="rewards"
-        options={{
-          title: "Rewards",
-          tabBarIcon: ({ color, size }) => <Ionicons name="gift-outline" size={size} color={color} />,
-        }}
+        name="customers"
+        options={{ title: "Customers", tabBarIcon: ({ color }) => <TabBarIcon name="people-outline" color={color} /> }}
+      />
+      <Tabs.Screen name="scan" options={{ title: "Scan", tabBarButton: () => <ScanTabButton /> }} />
+      <Tabs.Screen
+        name="program"
+        options={{ title: "Program", tabBarIcon: ({ color }) => <TabBarIcon name="star-outline" color={color} /> }}
       />
       <Tabs.Screen
-        name="scan"
-        options={{
-          title: "Scan",
-          // The raised center button opens the scanner from any tab
-          tabBarButton: () => <ScanTabButton />,
-        }}
-      />
-      <Tabs.Screen
-        name="promotions"
-        options={{
-          title: "Promos",
-          tabBarIcon: ({ color, size }) => <Ionicons name="flash-outline" size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: "Settings",
-          tabBarIcon: ({ color, size }) => <Ionicons name="options-outline" size={size} color={color} />,
-        }}
+        name="store"
+        options={{ title: "Store", tabBarIcon: ({ color }) => <TabBarIcon name="storefront-outline" color={color} /> }}
       />
     </Tabs>
   )

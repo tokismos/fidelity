@@ -15,6 +15,7 @@ export const useGiveReward = () => {
         queryClient.invalidateQueries({ queryKey: queryKeys.progress.all }),
         queryClient.invalidateQueries({ queryKey: queryKeys.givenRewards.all }),
         queryClient.invalidateQueries({ queryKey: queryKeys.store.all }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.todayStats.all }),
       ]),
   })
 

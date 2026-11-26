@@ -12,6 +12,7 @@ export const useAddCustomer = () => {
         queryClient.invalidateQueries({ queryKey: queryKeys.userStores.all }),
         queryClient.invalidateQueries({ queryKey: queryKeys.customers.all }),
         queryClient.invalidateQueries({ queryKey: queryKeys.store.all }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.todayStats.all }),
       ]),
   })
 

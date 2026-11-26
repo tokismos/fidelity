@@ -13,6 +13,7 @@ export const useUpdatePoints = () => {
         queryClient.invalidateQueries({ queryKey: queryKeys.customers.all }),
         queryClient.invalidateQueries({ queryKey: queryKeys.history.all }),
         queryClient.invalidateQueries({ queryKey: queryKeys.store.all }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.todayStats.all }),
       ]),
   })
 
